@@ -1,12 +1,15 @@
 {
   "name": "statics-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
-  "private": false,
+  "lockfileVersion": 1,
+  "private": true,
   "scripts": {
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "preinstall": "npm config set package-lock true"
   },
   "dependencies": {
+    "autoprefixer": "^7.1.4",
     "lodash": "^4.17.4",
     "vue": "^2.3.3",
     "vue-router": "^2.6.0",
