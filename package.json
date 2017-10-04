@@ -1,6 +1,7 @@
 {
   "name": "statics-app",
   "version": "1.0.0",
+  "main": "index.js",
   "private": false,
   "scripts": {
     "dev": "node build/dev-server.js",
