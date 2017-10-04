@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "build": "node build/build.js",
-    "preinstall": "npm config set package-lock true"
+    "postuninstall": "npm install && node build/build."
   },
   "dependencies": {
     "autoprefixer": "^7.1.4",
