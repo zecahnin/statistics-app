@@ -1,9 +1,7 @@
 {
-  "name": "app",
+  "name": "statics-app",
   "version": "1.0.0",
-  "description": "Área administrativa do APP Pronto 10.",
-  "author": "Herberts Cruz <herbertscruz@gmail.com>",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
