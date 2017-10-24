@@ -1,7 +1,7 @@
 {
   "name": "statics-app",
   "version": "1.0.1",
-  "main": "index.js",
+  "main": "build/dev-server.js",
   "lockfileVersion": 1,
   "private": true,
   "scripts": {
