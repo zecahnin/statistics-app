@@ -1,21 +1,21 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Consulta from '@/components/Consulta'
-import Exame from '@/components/Exame'
+import Conteudo from '@/components/Conteudo'
+import Usuario from '@/components/Usuario'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'consulta',
-      component: Consulta
+      path: '/conteudo',
+      name: 'conteudo',
+      component: Conteudo
     },
     {
-      path: '/exame',
-      name: 'exame',
-      component: Exame
+      path: '/usuario',
+      name: 'usuario',
+      component: Usuario
     }
   ]
 })

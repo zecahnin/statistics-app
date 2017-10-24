@@ -7,6 +7,9 @@ import store from './store'
 import {sync} from 'vuex-router-sync'
 import moment from 'moment'
 
+var VueD3 = require('vue-d3')
+Vue.use(VueD3)
+
 Vue.config.productionTip = false
 
 // Router state

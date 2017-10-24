@@ -1,75 +1,25 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import {helper} from '@/core/utils'
 
 Vue.use(Vuex)
 
 const state = {
-  consultas: [],
-  exames: []
+  querys: []
 }
 const mutations = {
   fetchConsultas (state, data) {
-    state.consultas = data
-  },
-  fetchExames (state, data) {
-    state.exames = data
-  },
-  updateConsultas (state, data) {
-    state.consultas = helper.mergeById(state.consultas, data)
-  },
-  updateExames (state, data) {
-    state.exames = helper.mergeById(state.exames, data)
+    state.querys = data
   }
 }
 const getters = {
-  getConsultas: state => state.consultas,
-  getExames: state => state.exames
+  getQuery: state => state.querys
 }
 const actions = {
-  async loadConsultas ({commit}) {
+  async loadReport ({commit}, jsonQuery) {
     try {
-      let filter = {
-        'include': ['usuario', 'especialidade'],
-        'order': 'dataCriacao DESC'
-      }
-      let {data} = await axios.get('http://localhost:3000/api/consultas?filter=' + JSON.stringify(filter))
-      commit('fetchConsultas', data)
-    } catch (err) {
-
-    }
-  },
-  async confirmConsulta ({commit}, id) {
-    try {
-      let {data} = await axios.patch('http://localhost:3000/api/consultas/' + id, {
-        'id': id,
-        'status': true
-      })
-      commit('updateConsultas', [data])
-    } catch (err) {
-
-    }
-  },
-  async loadExames ({commit}) {
-    try {
-      let filter = {
-        'include': ['usuario', 'exameTipo'],
-        'order': 'dataCriacao DESC'
-      }
-      let {data} = await axios.get('http://localhost:3000/api/exames?filter=' + JSON.stringify(filter))
-      commit('fetchExames', data)
-    } catch (err) {
-
-    }
-  },
-  async confirmExame ({commit}, id) {
-    try {
-      let {data} = await axios.patch('http://localhost:3000/api/exames/' + id, {
-        'id': id,
-        'status': true
-      })
-      commit('updateExames', [data])
+      let {data} = await axios.get('/statics/query?filter=' + JSON.stringify(jsonQuery))
+      return Promise.resolve(data)
     } catch (err) {
 
     }
