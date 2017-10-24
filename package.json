@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node build/dev-server.js",
     "build": "node build/dev-server.js",
-    "postuninstall": "npm install --prefix ../statics-app/node_modules/"
+    "postuninstall": "npm install"
   },
   "dependencies": {
     "autoprefixer": "^7.1.4",
