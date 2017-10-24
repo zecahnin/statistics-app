@@ -1,3 +1,4 @@
+require('rootpath')();
 require('./check-versions')()
 
 var config = require('../config/index')
