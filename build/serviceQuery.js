@@ -12,6 +12,9 @@ var knex = require('knex')({
     user : 'root',
     password : 'zeca',
     database : 'production_api'
+  },
+  migrations: {
+    tableName: 'migrations_statics'
   }
 });
 
