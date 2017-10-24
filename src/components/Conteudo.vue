@@ -5,8 +5,9 @@
 
       <el-modal ref="modalDescription" :okTitle="'OK'" :closeTitle="''">
         <div class="text-center">
-          <p class="title">Valeu!<i class="material-icons">thumb_up</i></p>
           <bar-chart :dataLoad="asyncDataDetalhamentoOne"></bar-chart>
+          <br>
+          <bar-chart :dataLoad="asyncDataDetalhamentoTwo"></bar-chart>
         </div>
       </el-modal>
 
@@ -60,7 +61,17 @@
               <td class="spark-cont">
                   <spark-line :dataLoad="dataRow" :propCol="asyncData.header.col" :statistics="statistics"></spark-line>
               </td>
-              <td>{{somaAcumulada(dataRow, asyncData.header.col)}}</td>
+              <td>
+                <div style="float:left">
+                {{somaAcumulada(dataRow, asyncData.header.col)}}
+                <div v-if="somaAcumulada(dataRow, asyncData.header.col) > 0" style="float:left">
+                    <i class="fa fa-arrow-up" style="color: blue"></i>
+                </div>
+                <div v-else style="float:left">
+                  <i class="fa fa-arrow-down"style="color: red"></i>
+                </div>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -114,8 +125,11 @@ export default {
           }
         ]
       }
-      let data = await this.loadReport(Object.assign({}, filter, {rows: [{field: 'conclusao', model: 'dados_desnomalizado'}]}))
-      this.asyncDataDetalhamentoOne = data
+      let dataOne = await this.loadReport(Object.assign({}, filter, {rows: [{field: 'conclusao', model: 'dados_desnomalizado'}]}))
+      this.asyncDataDetalhamentoOne = dataOne
+
+      let dataTwo = await this.loadReport(Object.assign({}, filter, {rows: [{field: 'periodo', model: 'dados_desnomalizado'}]}))
+      this.asyncDataDetalhamentoTwo = dataTwo
       this.$refs.modalDescription.show()
     },
     updateValueAction () {
@@ -332,6 +346,7 @@ export default {
       asyncDataTag: {},
       asyncDataConclusao: [],
       asyncDataDetalhamentoOne: [],
+      asyncDataDetalhamentoTwo: [],
       filter: {
         tipo: {
           value: '',
