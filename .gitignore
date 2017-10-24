@@ -1,7 +1,5 @@
 .DS_Store
 node_modules/
-!node_modules/webpack-merge
-!node_modules/webpack
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
