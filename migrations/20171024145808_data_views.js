@@ -16,8 +16,8 @@ exports.up = function(knex, Promise) {
   query += ' JOIN pel_objeto_aprendizagem oa';
   query += ' ON((voa.objeto = oa.id)));';
 
-  knex.raw(query).then(function(err1, result1) {
-    assert.isNotError(err);
+  return knex.raw(query).then(function(err1, result1) {
+    console.log(result1);
   });
 };
 
