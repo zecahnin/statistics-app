@@ -1,26 +1,24 @@
-/*const express = require('express');
- const app = express();
- var queryStat = require('./build/serviceQuery')();
+/*
+const express = require('express');
+const app = express();
+var queryStat = require('./build/serviceQuery')();
 
- const port = 5555;
+const port = 5555;
 
- module.exports = statics;
- function statics(loopbackApplication, options) {
- console.log('> Starting app edulivre');
+console.log('> Starting app edulivre');
 
- const staticFileMiddleware = express.static('dist');
- app.use(staticFileMiddleware);
+const staticFileMiddleware = express.static('dist');
+app.use(staticFileMiddleware);
 
 
- app.use('/statics/query', function (req, res) {
- queryStat.query(req, res);
- });
+app.use('/statics/query', function (req, res) {
+  queryStat.query(req, res);
+});
 
- app.listen(port, () = > {
- console.log(`Edulivre app listening on port ${port}!`);
- })
- ;
- }*/
+app.listen(port, () => {
+  console.log(`Edulivre app listening on port ${port}!`);
+});*/
+
 var _defaults = require('lodash').defaults;
 var path = require('path');
 var queryStat = require('./build/serviceQuery')();
