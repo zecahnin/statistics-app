@@ -5,22 +5,40 @@ var _defaults = require('lodash');
 var path = require('path');
 var jsonata = require("jsonata");
 
-var knex = require('knex')({
-  client: 'mysql',
-  connection: {
-    host : 'localhost',
-    user : 'root',
-    password : 'zeca',
-    database : 'production_api'
-  },
-  migrations: {
-    tableName: 'migrations_statics'
-  }
-});
-
 module.exports = function () {
   return {
-    query: function(req, res) {
+    migration: function(connection) {
+      var knex = require('knex')({
+        client: connection.connector,
+        connection: {
+          host : connection.host,
+          user : connection.user,
+          password : connection.password,
+          database : connection.database
+        },
+        migrations: {
+          tableName: 'knex_migrations'
+        }
+      });
+      knex.migrate.latest({directory: __dirname +'/../migrations'})
+        .then(function(result) {
+          console.log(result);
+        })
+        .catch(function(erro) {
+          console.log('bbbbbbbbbb'+JSON.stringify(erro))
+          // migrations are finished
+        });
+    },
+    query: function(req, res, connection) {
+      var knex = require('knex')({
+        client: connection.connector,
+        connection: {
+          host : connection.host,
+          user : connection.user,
+          password : connection.password,
+          database : connection.database
+        }
+      });
       var indexCol = 0;
       if(req.query.filter){
         req.query.filter =  JSON.parse(req.query.filter);
@@ -38,9 +56,9 @@ module.exports = function () {
         }
       });
       var header = {
-          row: [],
-          col: [],
-          expr: []
+        row: [],
+        col: [],
+        expr: []
       }
       var orderBy = [];
       var rows = [];
