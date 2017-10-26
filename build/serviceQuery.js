@@ -8,6 +8,15 @@ var jsonata = require("jsonata");
 module.exports = function () {
   return {
     migration: function(connection) {
+      if (!connection) {
+        connection = {
+          connector: 'mysql',
+          host : 'localhost',
+          user : 'root',
+          password : 'zeca',
+          database : 'production_api'
+        }
+      }
       var knex = require('knex')({
         client: connection.connector,
         connection: {
@@ -30,6 +39,15 @@ module.exports = function () {
         });
     },
     query: function(req, res, connection) {
+      if (!connection) {
+        connection = {
+          connector: 'mysql',
+          host : 'localhost',
+          user : 'root',
+          password : 'zeca',
+          database : 'production_api'
+        }
+      }
       var knex = require('knex')({
         client: connection.connector,
         connection: {
@@ -37,7 +55,8 @@ module.exports = function () {
           user : connection.user,
           password : connection.password,
           database : connection.database
-        }
+        },
+        pool: { min: 0, max: 10 }
       });
       var indexCol = 0;
       if(req.query.filter){
@@ -183,6 +202,9 @@ module.exports = function () {
             });
           });
       }else{
+        if(orderBy.length){
+          query.orderByRaw(orderBy.join(', '));
+        }
         query.select().then(function(projectNames){
           var result = {};
           result.header = header;

@@ -15,14 +15,6 @@
 			<div class="modal-dialog" :class="['modal-' + size]" @click.stop="">
 				<div class="modal-content">
 					<div v-if="!hideHeader" class="modal-header">
-						<button type="button"
-                    v-if="!hideHeaderClose"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-hidden="true"
-                    @click="hide">
-							<i class="material-icons">clear</i>
-						</button>
 						<h4 :is="titleTag" class="modal-title">
               <slot name="modal-title">{{ title }}</slot>
             </h4>
@@ -37,13 +29,7 @@
                       class="btn btn-primary btn-simple"
                       data-dismiss="modal"
                       @click="hide(false)">
-                <slot name="modal-ok">{{ okTitle }}</slot>
-              </button>
-              <button type="button"
-                      class="btn btn-danger btn-simple"
-                      data-dismiss="modal"
-                      @click="hide()">
-                <slot name="modal-cancel">{{ closeTitle }}</slot>
+                <slot name="modal-ok">Fechar</slot>
               </button>
             </slot>
           </div>

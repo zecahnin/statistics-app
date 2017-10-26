@@ -28,12 +28,15 @@ export default{
         chart: {
           type: 'wordcloud'
         },
+        credits: {
+          enabled: false
+        },
         series: [{
           type: 'wordcloud',
           data: []
         }],
         title: {
-          text: 'Wordcloud of Lorem Ipsum'
+          text: ''
         }
       }
     }

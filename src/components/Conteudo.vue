@@ -1,12 +1,14 @@
 <template>
   <div class="container-fluid">
-    <div class="row">
+    <div class="row" style="background-color: #f7f7f7;">
       <app-menu></app-menu>
 
       <el-modal ref="modalDescription" :okTitle="'OK'" :closeTitle="''">
         <div class="text-center">
+          <h3>Objeto por percentual de conclusão</h3>
           <bar-chart :dataLoad="asyncDataDetalhamentoOne"></bar-chart>
           <br>
+          <h3>Acesso por horário</h3>
           <bar-chart :dataLoad="asyncDataDetalhamentoTwo"></bar-chart>
         </div>
       </el-modal>
@@ -28,7 +30,7 @@
                   <multiselect v-model="filter.tipo.value" :options="filter.tipo.options" @input="updateValueAction"></multiselect>
                 </td>
                 <td>
-                  <multiselect v-model="filter.midia.value" :options="filter.midia.options"></multiselect>
+                  <multiselect v-model="filter.midia.value" :options="filter.midia.options" @input="updateValueAction"></multiselect>
                 </td>
                 <td>
                   <date-picker v-model="filter.dataini.value" lang="pt-br" placeholder="Data Incial" @input="updateValueAction"></date-picker>
@@ -42,16 +44,18 @@
         </div>
       </div>
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h3>Média e acesso aos conteúdos</h3>
         <line-chart :dataLoad="asyncData"></line-chart>
       </div>
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h3>Detalhamentos dos acessos</h3>
         <table class="table">
           <thead>
             <tr>
               <th>Objeto</th>
-              <th>Acessos</th>
+              <th>Qtd de acessos</th>
               <th>Evolução</th>
-              <th>Novos Acessos</th>
+              <th>Saldo acumulado</th>
             </tr>
           </thead>
           <tbody>
@@ -77,6 +81,7 @@
         </table>
       </div>
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h3>Acessos por Tag dos objetos</h3>
         <tag-cloud :dataLoad="asyncDataTag"></tag-cloud>
       </div>
     </div>
@@ -133,9 +138,9 @@ export default {
       this.$refs.modalDescription.show()
     },
     updateValueAction () {
+      this.loadFilter()
       this.getReportConclusao()
       this.getReportDate()
-      this.loadFilter()
       this.getReportTag()
     },
     async getReportConclusao () {
@@ -299,7 +304,6 @@ export default {
           optionsTipo.push(item['_0'])
         })
         this.filter.tipo.options = optionsTipo
-
         let filterMidia = {
           include: [{
             model: 'dados_desnomalizado'
