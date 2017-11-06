@@ -8,7 +8,7 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/conteudo',
+      path: '/',
       name: 'conteudo',
       component: Conteudo
     },
