@@ -154,7 +154,7 @@ module.exports = function () {
             queryCol.whereRaw(row.model+'.'+row.field+' '+row.op+' ?', row.value);
           });
         }
-        queryCol.orderByRaw(orgColName+' ASC')
+        queryCol.orderByRaw('date  ASC')
         queryCol.select()
           .then(function(rows) {
             if(req.query.filter.cols[0].limit){
