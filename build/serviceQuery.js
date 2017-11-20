@@ -4,7 +4,7 @@ var express = require('express');
 var _defaults = require('lodash');
 var path = require('path');
 var jsonata = require("jsonata");
-var db = require('../knexfile'); //reference of dbconnection.js
+var db = require('../knexfile'); //reference of knexfile.js
 
 let queryResult = function () {
   return {
