@@ -6,7 +6,7 @@ var path = require('path');
 var jsonata = require("jsonata");
 var db = require('../knexfile'); //reference of knexfile.js
 
-let queryResult = function () {
+let result = function () {
   return {
     migration: function (connection) {
 
@@ -188,4 +188,4 @@ let queryResult = function () {
   }
 };
 
-module.exports = queryResult
+module.exports = result
