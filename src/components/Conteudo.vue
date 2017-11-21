@@ -323,12 +323,17 @@ export default {
             value: this.filter.tipo.value
           })
         }
-        let dataFilterMidia = await this.loadReport(filterMidia)
-        let optionsMidia = []
-        dataFilterMidia.data.forEach(function (item) {
-          optionsMidia.push(item['_0'])
-        })
-        this.filter.midia.options = optionsMidia
+//        let dataFilterMidia = await this.loadReport(filterMidia)
+//        let optionsMidia = []
+//        dataFilterMidia.data.forEach(function (item) {
+//          optionsMidia.push(item['_0'])
+//        })
+        this.filter.midia.options = [
+          'Vídeo',
+          'Lições',
+          'Trilha',
+          'Trilha da Oportunidade'
+        ]
       } catch (err) {
         console.log('2222', err)
       }
