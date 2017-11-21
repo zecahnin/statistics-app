@@ -330,7 +330,7 @@ export default {
 //        })
         this.filter.midia.options = [
           'Vídeo',
-          'Lições',
+          'LIção',
           'Trilha',
           'Trilha da Oportunidade'
         ]
