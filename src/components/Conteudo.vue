@@ -27,7 +27,7 @@
             <tbody>
               <tr>
                 <td>
-                  <multiselect v-model="filter.tipo.value" :options="filter.tipo.options" @input="updateValueAction"></multiselect>
+                  <multiselect v-model="periodo.value" :options="periodo.options" @input="updateValueAction('data')"></multiselect>
                 </td>
                 <td>
                   <multiselect v-model="filter.midia.value" :options="filter.midia.options" @input="updateValueAction"></multiselect>
@@ -137,7 +137,8 @@ export default {
       this.asyncDataDetalhamentoTwo = dataTwo
       this.$refs.modalDescription.show()
     },
-    updateValueAction () {
+    updateValueAction (value) {
+      console.log(value)
       this.loadFilter()
       this.getReportConclusao()
       this.getReportDate()
@@ -221,11 +222,10 @@ export default {
               field: 'tipo',
               model: 'dados_desnomalizado',
               op: '=',
-              value: this.filter.tipo.value ? this.filter.tipo.value : 'Componente de Aprendizagem'
+              value: 'Componente de Aprendizagem'
             }
           ]
         }
-
         switch (this.filter.midia.value) {
           case 'Vídeo':
             filter.where.push({
@@ -338,7 +338,7 @@ export default {
         })
 
         this.filter.tipo.options = optionsTipo
-        this.filter.tipo.options = ['Últimos 90 dias', 'Últimos 60 dias', 'Últimos 30 dias', 'Últimos 15 dias', 'Últimos 7 dias']
+        this.periodo.options = ['Últimos 90 dias', 'Últimos 60 dias', 'Últimos 30 dias', 'Últimos 15 dias', 'Últimos 7 dias']
 
         let filterMidia = {
           include: [{
@@ -392,6 +392,10 @@ export default {
       asyncDataConclusao: [],
       asyncDataDetalhamentoOne: [],
       asyncDataDetalhamentoTwo: [],
+      periodo: {
+        value: '',
+        options: []
+      },
       filter: {
         tipo: {
           value: '',
