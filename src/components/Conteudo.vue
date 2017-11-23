@@ -225,34 +225,47 @@ export default {
             }
           ]
         }
-        // Adiciona filtro vídeo
-        if (this.filter.midia.value === 'Vídeo') {
-          filter.where.push({
-            field: 'midia',
-            model: 'dados_desnomalizado',
-            op: '=',
-            value: this.filter.midia.value
-          })
-          filter.where[0].value = 'Objeto Informacional'
+
+        switch (this.filter.midia.value) {
+          case 'Vídeo':
+            filter.where.push({
+              field: 'midia',
+              model: 'dados_desnomalizado',
+              op: '=',
+              value: this.filter.midia.value
+            })
+            filter.where[0].value = 'Objeto Informacional'
+            break
+          case 'Lição':
+            filter.where.push({
+              field: 'midia',
+              model: 'dados_desnomalizado',
+              op: '=',
+              value: this.filter.midia.value
+            })
+            filter.where[0].value = 'Objeto Educacional'
+            break
+          case 'Trilha':
+            filter.where.push({
+              field: 'midia',
+              model: 'dados_desnomalizado',
+              op: '=',
+              value: this.filter.midia.value
+            })
+            filter.where[0].value = 'Componente de Aprendizagem'
+            break
+          case 'Trilha da Oportunidade':
+            filter.where.push({
+              field: 'midia',
+              model: 'dados_desnomalizado',
+              op: '=',
+              value: this.filter.midia.value
+            })
+            filter.where[0].value = 'Componente de Aprendizagem'
+            break
+          default:
         }
-        // Adiciona filtro lição
-        if (this.filter.midia.value === 'Lição') {
-          filter.where.push({
-            field: 'midia',
-            model: 'dados_desnomalizado',
-            op: '=',
-            value: this.filter.midia.value
-          })
-          filter.where[0].value = 'Objeto Educacional'
-        }
-        if (this.filter.dataini.value) {
-          filter.where.push({
-            field: 'data',
-            model: 'dados_desnomalizado',
-            op: '>=',
-            value: this.filter.dataini.value
-          })
-        }
+
         if (this.filter.datafim.value) {
           filter.where.push({
             field: 'data',
