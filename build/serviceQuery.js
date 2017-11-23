@@ -123,10 +123,19 @@ module.exports = function () {
         }
       }
       if(req.query.filter.where){
+        var arryFilterWhere = [];
         req.query.filter.where.forEach(function(row,index){
-          query.whereRaw(row.model+'.'+row.field+' '+row.op+' ?', row.value);
-          queryAvg.whereRaw(row.model+'.'+row.field+' '+row.op+' ?', row.value);
+          //wherecolDistinct.push(req.query.filter.cols[0].model+'.'+req.query.filter.cols[0].field+' >= DATE(NOW()) - INTERVAL '+req.query.filter.cols[0].interval+' DAY');
+          if(row.interval){
+            arryFilterWhere.push(row.model+'.'+row.field+' '+row.op+' DATE(NOW()) - INTERVAL '+row.interval+' DAY')
+          }else{
+            arryFilterWhere.push(row.model+'.'+row.field+' '+row.op+' \''+row.value+'\'')
+          }
         });
+        if(arryFilterWhere.length!=0){
+          query.whereRaw(arryFilterWhere.join(' AND '));
+          queryAvg.whereRaw(arryFilterWhere.join(' AND '));
+        }
       }
       var col=[];
       if(req.query.filter.cols){
@@ -147,13 +156,11 @@ module.exports = function () {
           var strDate = "'"+arrayDate.join('-')+"'"
           colName =  'DATE_FORMAT('+colName+','+strDate+')';
         }
-        queryCol.column(knex.raw(colName+' as date'));
-        queryCol.distinct(knex.raw(colName))
-        if(req.query.filter.where){
-          req.query.filter.where.forEach(function(row,index){
-            queryCol.whereRaw(row.model+'.'+row.field+' '+row.op+' ?', row.value);
-          });
+        queryCol.column(knex.raw(' distinct ('+colName+') as date'));
+        if(arryFilterWhere.length!=0){
+          queryCol.whereRaw(arryFilterWhere.join(' AND '));
         }
+
         queryCol.orderByRaw('date  ASC')
         queryCol.select()
           .then(function(rows) {
