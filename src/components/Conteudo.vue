@@ -18,10 +18,10 @@
           <table class="table">
             <thead>
               <tr>
-                <th>Tipo de Elemento</th>
+                <th>Período</th>
                 <th>Mídia</th>
-                <th>Data Inicial</th>
-                <th>Data Final</th>
+                <!--<th>Data Inicial</th>-->
+                <!--<th>Data Final</th>-->
               </tr>
             </thead>
             <tbody>
@@ -32,12 +32,12 @@
                 <td>
                   <multiselect v-model="filter.midia.value" :options="filter.midia.options" @input="updateValueAction"></multiselect>
                 </td>
-                <td>
-                  <date-picker v-model="filter.dataini.value" lang="pt-br" placeholder="Data Incial" @input="updateValueAction"></date-picker>
-                </td>
-                <td>
-                  <date-picker v-model="filter.datafim.value" lang="pt-br" placeholder="Data Fim" @input="updateValueAction"></date-picker>
-                </td>
+                <!--<td>-->
+                  <!--<date-picker v-model="filter.dataini.value" lang="pt-br" placeholder="Data Incial" @input="updateValueAction"></date-picker>-->
+                <!--</td>-->
+                <!--<td>-->
+                  <!--<date-picker v-model="filter.datafim.value" lang="pt-br" placeholder="Data Fim" @input="updateValueAction"></date-picker>-->
+                <!--</td>-->
               </tr>
             </tbody>
           </table>
@@ -225,6 +225,26 @@ export default {
             }
           ]
         }
+        // Adiciona filtro vídeo
+        if (this.filter.midia.value === 'Vídeo') {
+          filter.where.push({
+            field: 'midia',
+            model: 'dados_desnomalizado',
+            op: '=',
+            value: this.filter.midia.value
+          })
+          filter.where[0].value = 'Objeto Informacional'
+        }
+        // Adiciona filtro lição
+        if (this.filter.midia.value === 'Lição') {
+          filter.where.push({
+            field: 'midia',
+            model: 'dados_desnomalizado',
+            op: '=',
+            value: this.filter.midia.value
+          })
+          filter.where[0].value = 'Objeto Educacional'
+        }
         if (this.filter.dataini.value) {
           filter.where.push({
             field: 'data',
@@ -303,7 +323,10 @@ export default {
         dataFilterTipo.data.forEach(function (item) {
           optionsTipo.push(item['_0'])
         })
+
         this.filter.tipo.options = optionsTipo
+        this.filter.tipo.options = ['Últimos 90 dias', 'Últimos 60 dias', 'Últimos 30 dias', 'Últimos 15 dias', 'Últimos 7 dias']
+
         let filterMidia = {
           include: [{
             model: 'dados_desnomalizado'
@@ -330,7 +353,7 @@ export default {
 //        })
         this.filter.midia.options = [
           'Vídeo',
-          'LIção',
+          'Lição',
           'Trilha',
           'Trilha da Oportunidade'
         ]
