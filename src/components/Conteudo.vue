@@ -18,7 +18,7 @@
           <table class="table">
             <thead>
               <tr>
-                <th>Período</th>
+                <!--<th>Período</th>-->
                 <th>Mídia</th>
                 <!--<th>Data Inicial</th>-->
                 <!--<th>Data Final</th>-->
@@ -26,11 +26,11 @@
             </thead>
             <tbody>
               <tr>
+                <!--<td>-->
+                  <!--<multiselect v-model="periodo.value" :options="periodo.options" @input="updateValueAction('data')"></multiselect>-->
+                <!--</td>-->
                 <td>
-                  <multiselect v-model="periodo.value" :options="periodo.options" @input="updateValueAction('data')"></multiselect>
-                </td>
-                <td>
-                  <multiselect v-model="filter.midia.value" :options="filter.midia.options" @input="updateValueAction"></multiselect>
+                  <multiselect class="size-input30" v-model="filter.midia.value" :options="filter.midia.options" @input="updateValueAction(null)"></multiselect>
                 </td>
                 <!--<td>-->
                   <!--<date-picker v-model="filter.dataini.value" lang="pt-br" placeholder="Data Incial" @input="updateValueAction"></date-picker>-->
@@ -41,10 +41,24 @@
               </tr>
             </tbody>
           </table>
+          <div class="text-center">
+            <div class="btn-group" role="group" aria-label="...">
+              <button type="button" class="btn btn-default" @click="updateValueAction(7)">Ultimos 7 dias</button>
+              <button type="button" class="btn btn-default" @click="updateValueAction(15)">Últimos 15 dias</button>
+              <button type="button" class="btn btn-default" @click="updateValueAction(30)">Últimos 30 dias</button>
+              <button type="button" class="btn btn-default" @click="updateValueAction(60)">Ùltimos 60 dias</button>
+              <button type="button" class="btn btn-default" @click="updateValueAction(90)">Ùltimos 90 dias</button>
+              <button type="button" class="btn btn-default" @click="updateValueAction(180)">Ùltimos 180 dias</button>
+            </div>
+          </div>
         </div>
       </div>
+
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h3>Média e acesso aos conteúdos</h3>
+        <div class="text-center">
+        <div v-if="asyncData.data && asyncData.data.length <=0">Não foram encontrados resultados</div>
+        </div>
         <line-chart :dataLoad="asyncData"></line-chart>
       </div>
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -99,6 +113,7 @@ import SparkLine from './charts/SparkLine'
 import TagCloud from './charts/TagClound'
 import ElModal from './modal/Modal'
 import highchartsMixin from '@/mixins/highcharts'
+import moment from 'moment'
 
 export default {
   name: 'conteudo',
@@ -137,11 +152,10 @@ export default {
       this.asyncDataDetalhamentoTwo = dataTwo
       this.$refs.modalDescription.show()
     },
-    updateValueAction (value) {
-      console.log(value)
+    updateValueAction (valor) {
       this.loadFilter()
       this.getReportConclusao()
-      this.getReportDate()
+      this.getReportDate(valor)
       this.getReportTag()
     },
     async getReportConclusao () {
@@ -178,7 +192,7 @@ export default {
             field: 'data',
             model: 'dados_desnomalizado',
             op: '>=',
-            value: this.filter.dataini.value
+            value: moment(this.filter.dataini.value).format('YYYY-MM-DD')
           })
         }
         if (this.filter.datafim.value) {
@@ -186,7 +200,7 @@ export default {
             field: 'data',
             model: 'dados_desnomalizado',
             op: '<=',
-            value: this.filter.datafim.value
+            value: moment(this.filter.datafim.value).format('YYYY-MM-DD')
           })
         }
         let data = await this.loadReport(filter)
@@ -195,7 +209,7 @@ export default {
         console.log('aaaaa', err)
       }
     },
-    async getReportDate () {
+    async getReportDate (numberDays) {
       try {
         let filter = {
           include: [{
@@ -272,6 +286,16 @@ export default {
             model: 'dados_desnomalizado',
             op: '<=',
             value: this.filter.datafim.value
+          })
+        }
+
+        if (numberDays) {
+          console.log(numberDays)
+          filter.where.push({
+            field: 'data',
+            model: 'dados_desnomalizado',
+            op: '>=',
+            interval: numberDays
           })
         }
         let data = await this.loadReport(filter)
@@ -423,9 +447,14 @@ export default {
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
-.spark-cont {
-  height: 30px;
-  width: 200px;
-  display: inline-block
-}
+  .spark-cont {
+    height: 30px;
+    width: 200px;
+    display: inline-block
+  }
+
+  .size-input30 {
+    width: 30%;
+  }
+
 </style>
