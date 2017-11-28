@@ -32,7 +32,6 @@ function statics(loopbackApplication, options) {
   loopbackApplication.set('statics-app', options);
 }
 
-
 function routes(loopbackApplication, options, db) {
   var loopback = loopbackApplication.loopback;
 
