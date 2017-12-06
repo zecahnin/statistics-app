@@ -43,12 +43,13 @@
           </table>
           <div class="text-center">
             <div class="btn-group" role="group" aria-label="...">
-              <button type="button" class="btn btn-default" @click="updateValueAction(7)">Ultimos 7 dias</button>
-              <button type="button" class="btn btn-default" @click="updateValueAction(15)">Últimos 15 dias</button>
-              <button type="button" class="btn btn-default" @click="updateValueAction(30)">Últimos 30 dias</button>
-              <button type="button" class="btn btn-default" @click="updateValueAction(60)">Ùltimos 60 dias</button>
-              <button type="button" class="btn btn-default" @click="updateValueAction(90)">Ùltimos 90 dias</button>
-              <button type="button" class="btn btn-default" @click="updateValueAction(180)">Ùltimos 180 dias</button>
+              <button :class="{ active: isActive == 'b1' }" type="button" class="btn btn-default" @click="updateValueAction('tudo'), isActive = 'b1'">Tudo</button>
+              <button :class="{ active: isActive == 'b2' }" type="button" class="btn btn-default" @click="updateValueAction(7), isActive = 'b2'">Ultimos 7 dias</button>
+              <button :class="{ active: isActive == 'b3' }" type="button" class="btn btn-default" @click="updateValueAction(15), isActive = 'b3'">Últimos 15 dias</button>
+              <button :class="{ active: isActive == 'b4' }" type="button" class="btn btn-default" @click="updateValueAction(30), isActive = 'b4'">Últimos 30 dias</button>
+              <button :class="{ active: isActive == 'b5' }" type="button" class="btn btn-default" @click="updateValueAction(60), isActive = 'b5'">Ùltimos 60 dias</button>
+              <button :class="{ active: isActive == 'b6' }" type="button" class="btn btn-default" @click="updateValueAction(90), isActive = 'b6'">Ùltimos 90 dias</button>
+              <button :class="{ active: isActive == 'b7' }" type="button" class="btn btn-default" @click="updateValueAction(180), isActive = 'b7'">Ùltimos 180 dias</button>
             </div>
           </div>
         </div>
@@ -407,6 +408,7 @@ export default {
   },
   data () {
     return {
+      isActive: 'b1',
       select: {
         value: null,
         options: ['list', 'of', 'options']
@@ -426,7 +428,7 @@ export default {
           options: []
         },
         midia: {
-          value: '',
+          value: 'Trilha',
           options: []
         },
         dataini: {
