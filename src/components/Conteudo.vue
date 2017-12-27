@@ -18,26 +18,14 @@
           <table class="table">
             <thead>
               <tr>
-                <!--<th>Período</th>-->
                 <th>Mídia</th>
-                <!--<th>Data Inicial</th>-->
-                <!--<th>Data Final</th>-->
               </tr>
             </thead>
             <tbody>
               <tr>
-                <!--<td>-->
-                  <!--<multiselect v-model="periodo.value" :options="periodo.options" @input="updateValueAction('data')"></multiselect>-->
-                <!--</td>-->
                 <td>
                   <multiselect class="size-input30" v-model="filter.midia.value" :options="filter.midia.options" @input="updateValueAction(null)"></multiselect>
                 </td>
-                <!--<td>-->
-                  <!--<date-picker v-model="filter.dataini.value" lang="pt-br" placeholder="Data Incial" @input="updateValueAction"></date-picker>-->
-                <!--</td>-->
-                <!--<td>-->
-                  <!--<date-picker v-model="filter.datafim.value" lang="pt-br" placeholder="Data Fim" @input="updateValueAction"></date-picker>-->
-                <!--</td>-->
               </tr>
             </tbody>
           </table>
@@ -55,6 +43,18 @@
         </div>
       </div>
 
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="row">
+          <div class="col-xl-3 col-lg-6 col-12">
+            <button type="button" class="btn btn-primary">
+              Acessos <span class="badge badge-light">{{getReportBigNumber(asyncData)}}</span>
+            </button>
+            <button type="button" class="btn btn-primary">
+              Saldo Acumulado <span class="badge badge-light">{{getReportBigNumber(asyncData)}}</span>
+            </button>
+          </div>
+        </div>
+      </div>
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h3>Média e acesso aos conteúdos</h3>
         <div class="text-center">
@@ -190,7 +190,7 @@ export default {
         }
         if (this.filter.dataini.value) {
           filter.where.push({
-            field: 'data',
+            field: 'dt_acesso',
             model: 'dados_desnomalizado',
             op: '>=',
             value: moment(this.filter.dataini.value).format('YYYY-MM-DD')
@@ -198,7 +198,7 @@ export default {
         }
         if (this.filter.datafim.value) {
           filter.where.push({
-            field: 'data',
+            field: 'dt_acesso',
             model: 'dados_desnomalizado',
             op: '<=',
             value: moment(this.filter.datafim.value).format('YYYY-MM-DD')
@@ -227,7 +227,7 @@ export default {
             order: 'desc'
           }],
           cols: [{
-            field: 'data',
+            field: 'dt_acesso',
             model: 'dados_desnomalizado',
             format: 'dd/mm/yyyy',
             limit: 6
@@ -283,7 +283,7 @@ export default {
 
         if (this.filter.datafim.value) {
           filter.where.push({
-            field: 'data',
+            field: 'dt_acesso',
             model: 'dados_desnomalizado',
             op: '<=',
             value: this.filter.datafim.value
@@ -291,9 +291,8 @@ export default {
         }
 
         if (numberDays) {
-          console.log(numberDays)
           filter.where.push({
-            field: 'data',
+            field: 'dt_acesso',
             model: 'dados_desnomalizado',
             op: '>=',
             interval: numberDays
@@ -334,6 +333,15 @@ export default {
       } catch (err) {
         console.log('2222', err)
       }
+    },
+    getReportBigNumber (array) {
+      if (!array.data) return false
+
+      let count = 0
+      array.data.forEach(function (item) {
+        count += item['_1']
+      })
+      return count
     },
     async loadFilter () {
       try {
@@ -457,6 +465,9 @@ export default {
 
   .size-input30 {
     width: 30%;
+  }
+  .btn-group{
+    z-index: 0;
   }
 
 </style>

@@ -77,7 +77,7 @@ export default {
         serie.name = ''
         serie.weight = 0
         dataDb.header.row.forEach(function (row) {
-          serie.name = item[row.id]
+          serie.name = item[row.id].replace(' ', '-')
         })
         dataDb.header.expr.forEach(function (expr) {
           serie.weight = item[expr.id]

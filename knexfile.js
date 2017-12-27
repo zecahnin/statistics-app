@@ -3,11 +3,12 @@ var knex = require('knex')({
   connection: {
     database: 'production_api',
     user: 'root',
-    password: 'root',
-    host: 'localhost',
+    password: 'zeca',
+    host: 'localhost'
   },
   migrations: {
     tableName: 'knex_migrations'
   }
-});
+})
+
 module.exports = knex
