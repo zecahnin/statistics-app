@@ -50,7 +50,14 @@
               Acessos <span class="badge badge-light">{{getReportBigNumber(asyncData)}}</span>
             </button>
             <button type="button" class="btn btn-primary">
-              Saldo Acumulado <span class="badge badge-light">{{getReportBigNumber(asyncData)}}</span>
+              Saldo Acumulado <span class="badge badge-light">{{getReportBigNumberSaldoAcumulado(asyncData)}}
+            <div v-if="getReportBigNumberSaldoAcumulado(asyncData) > 0" style="float:left">
+                <i class="fa fa-arrow-up" style="color: blue"></i>
+              </div>
+              <div v-else style="float:left">
+                <i class="fa fa-arrow-down"style="color: red"></i>
+              </div>
+            </span>
             </button>
           </div>
         </div>
@@ -335,7 +342,7 @@ export default {
       }
     },
     getReportBigNumber (array) {
-      if (!array.data) return false
+      if (!array.data) return 0
 
       let count = 0
       array.data.forEach(function (item) {
@@ -343,6 +350,16 @@ export default {
       })
       return count
     },
+    getReportBigNumberSaldoAcumulado (array) {
+      if (!array.data) return 0
+
+      let statistics = 0
+      array.data.forEach(function (item, index) {
+        statistics += array.data[(index - 1)] ? ((array.data[index]['_1'] - array.data[(index - 1)]['_1'])) : 0
+      })
+      return statistics
+    },
+
     async loadFilter () {
       try {
         let filter = {

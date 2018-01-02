@@ -1,5 +1,5 @@
 {
-  "name": "statics-app",
+  "name": "statistics-app",
   "version": "1.0.1",
   "main": "server.js",
   "lockfileVersion": 1,
@@ -100,6 +100,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zecahnin/statics-app"
+    "url": "https://github.com/zecahnin/statistics-app"
   }
 }

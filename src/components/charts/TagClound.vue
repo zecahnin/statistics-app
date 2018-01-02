@@ -51,7 +51,6 @@ export default{
       var series = this.transformSimpleSerie(this.dataLoad)
       this._data.options.series[0].data = series
       var options = Object.assign({}, JSON.parse(JSON.stringify(this._data.options)))
-      console.log(options)
       this.target = Highcharts.chart(this.$el, options)
     }
   }

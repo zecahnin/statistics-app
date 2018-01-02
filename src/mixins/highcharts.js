@@ -77,7 +77,11 @@ export default {
         serie.name = ''
         serie.weight = 0
         dataDb.header.row.forEach(function (row) {
-          serie.name = item[row.id].replace(' ', '-')
+          if (typeof item[row.id] === 'string') {
+            serie.name = item[row.id].replace(' ', '-')
+          } else {
+            serie.name = item[row.id] ? item[row.id].toString() : '0'
+          }
         })
         dataDb.header.expr.forEach(function (expr) {
           serie.weight = item[expr.id]

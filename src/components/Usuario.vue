@@ -81,7 +81,7 @@
         </table>
       </div>
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <h3>Acessos por Tag dos objetos</h3>
+        <h3>Idade dos Jovens</h3>
         <tag-cloud :dataLoad="asyncDataTag"></tag-cloud>
       </div>
     </div>
@@ -137,14 +137,14 @@
         this.asyncDataDetalhamentoTwo = dataTwo
         this.$refs.modalDescription.show()
       },
-      updateValueAction () {
+      updateValueAction (valor) {
         this.loadFilter()
         this.getReportConclusao()
-        this.getReportDate()
+        this.getReportDate(valor)
         this.getReportTag()
       },
       async getReportConclusao () {
-        try {
+        /* try {
           let filter = {
             include: [{
               model: 'dados_desnomalizado'
@@ -192,84 +192,64 @@
           this.asyncDataConclusao = data
         } catch (err) {
           console.log('aaaaa', err)
-        }
+        } */
       },
-      async getReportDate () {
+      async getReportDate (numberDays) {
         try {
           let filter = {
             include: [{
-              model: 'dados_desnomalizado'
+              model: 'vw_usuario'
             }],
             rows: [{
-              field: 'titulo',
-              model: 'dados_desnomalizado'
+              field: 'tipo',
+              model: 'vw_usuario'
             }],
             expr: [{
-              field: 'id',
-              model: 'dados_desnomalizado',
+              field: 'usuarioId',
+              model: 'vw_usuario',
               func: 'count',
               order: 'desc'
             }],
             cols: [{
-              field: 'data',
-              model: 'dados_desnomalizado',
+              field: 'dt_acesso',
+              model: 'vw_usuario',
               format: 'dd/mm/yyyy',
               limit: 6
             }],
-            where: [
-              {
-                field: 'tipo',
-                model: 'dados_desnomalizado',
-                op: '=',
-                value: this.filter.tipo.value ? this.filter.tipo.value : 'Componente de Aprendizagem'
-              }
-            ]
+            where: []
           }
-          if (this.filter.dataini.value) {
+          if (numberDays) {
             filter.where.push({
-              field: 'data',
-              model: 'dados_desnomalizado',
+              field: 'dt_acesso',
+              model: 'vw_usuario',
               op: '>=',
-              value: this.filter.dataini.value
-            })
-          }
-          if (this.filter.datafim.value) {
-            filter.where.push({
-              field: 'data',
-              model: 'dados_desnomalizado',
-              op: '<=',
-              value: this.filter.datafim.value
+              interval: numberDays
             })
           }
           let data = await this.loadReport(filter)
+          console.log(data)
           this.asyncData = data
         } catch (err) {
           console.log('aaaaa', err)
         }
       },
+      // ok
       async getReportTag () {
         try {
           let filterTag = {
             include: [{
-              model: 'vw_tags'
+              model: 'vw_usuario'
             }],
             rows: [{
-              field: 'nome',
-              model: 'vw_tags'
+              field: 'idade',
+              model: 'vw_usuario'
             }],
             expr: [{
-              field: 'item',
-              model: 'vw_tags',
+              field: 'usuarioId',
+              model: 'vw_usuario',
               func: 'count'
             }],
-            where: [
-              {
-                field: 'objetoAprendizagemTipoId',
-                model: 'vw_tags',
-                op: '=',
-                value: '3'
-              }
-            ]
+            where: []
           }
           let dataTag = await this.loadReport(filterTag)
           this.asyncDataTag = dataTag
@@ -340,13 +320,14 @@
       }
     },
     mounted: function () {
-      this.getReportConclusao()
+      // this.getReportConclusao()
       this.getReportDate()
-      this.getReportTag()
-      this.loadFilter()
+      // this.getReportTag()
+      // this.loadFilter()
     },
     data () {
       return {
+        isActive: 'b1',
         select: {
           value: null,
           options: ['list', 'of', 'options']
