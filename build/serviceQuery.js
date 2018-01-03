@@ -29,7 +29,7 @@ module.exports = function () {
           tableName: 'knex_migrations'
         }
       });
-      knex.migrate.latest({directory: __dirname +'/../migrations'})
+      knex.migrate.latest({directory: __dirname +'/../migrations', transaction: false })
         .then(function(result) {
           console.log(result);
         })
