@@ -11,7 +11,7 @@
  app.use(staticFileMiddleware);
 
 
- app.use('/statics/query', function (req, res) {
+ app.use('/statistics/query', function (req, res) {
  queryStat.query(req, res);
  });
 

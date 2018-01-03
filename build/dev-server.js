@@ -54,7 +54,7 @@ Object.keys(proxyTable).forEach(function (context) {
 })
 
 queryStat.migration(null);
-app.use('/statics/query', function (req, res) {
+app.use('/statistics/query', function (req, res) {
     queryStat.query(req, res);
 });
 
@@ -68,9 +68,9 @@ app.use(devMiddleware)
 // compilation error display
 app.use(hotMiddleware)
 
-// serve pure static assets
+// serve pure statistics assets
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
-app.use(staticPath, express.static('./static'))
+app.use(staticPath, express.static('./statistics'))
 
 var uri = 'http://localhost:' + port
 

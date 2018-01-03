@@ -6,11 +6,11 @@ module.exports = {
     env: require('./prod.env'),
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
-    assetsPublicPath: '/statics',
+    assetsSubDirectory: 'statistics',
+    assetsPublicPath: '/statistics',
     productionSourceMap: true,
-    // Gzip off by default as many popular static hosts such as
-    // Surge or Netlify already gzip all static assets for you.
+    // Gzip off by default as many popular statistics hosts such as
+    // Surge or Netlify already gzip all statistics assets for you.
     // Before setting to `true`, make sure to:
     // npm install --save-dev compression-webpack-plugin
     productionGzip: false,
@@ -25,7 +25,7 @@ module.exports = {
     env: require('./dev.env'),
     port: 3030,
     autoOpenBrowser: true,
-    assetsSubDirectory: 'static',
+    assetsSubDirectory: 'statistics',
     assetsPublicPath: '/',
     proxyTable: {},
     // CSS Sourcemaps off by default because relative paths are "buggy"

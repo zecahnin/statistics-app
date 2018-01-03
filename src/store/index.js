@@ -18,7 +18,7 @@ const getters = {
 const actions = {
   async loadReport ({commit}, jsonQuery) {
     try {
-      let {data} = await axios.get('/statics/query?filter=' + JSON.stringify(jsonQuery))
+      let {data} = await axios.get('/statistics/query?filter=' + JSON.stringify(jsonQuery))
       return Promise.resolve(data)
     } catch (err) {
 
