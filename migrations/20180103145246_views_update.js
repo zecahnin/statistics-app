@@ -179,10 +179,10 @@ exports.up = function(knex, Promise) {
     'group by dados_desnomalizado.dt_acesso,dados_desnomalizado.usuarioId' +
     'GO'
 
-  var removeOld1 = 'DROP VIEW vw_tags;'
-  var removeOld2 = 'DROP VIEW dados_desnomalizado;'
-  var removeOld3 = 'DROP VIEW vw_objeto_acesso;'
-  var removeOld4 = 'DROP VIEW vw_objeto_acesso_statics;'
+  var removeOld1 = 'DROP VIEW IF EXISTS vw_tags;'
+  var removeOld2 = 'DROP VIEW IF EXISTS dados_desnomalizado;'
+  var removeOld3 = 'DROP VIEW IF EXISTS vw_objeto_acesso;'
+  var removeOld4 = 'DROP VIEW IF EXISTS vw_objeto_acesso_statics;'
 
   return knex.raw(removeOld1).then(function (errD1, resultDel1) {
     knex.raw(removeOld2).then(function (errD2, resultDel2) {
@@ -204,10 +204,10 @@ exports.up = function(knex, Promise) {
 }
 
 exports.down = function(knex, Promise) {
-  var removeOld1 = 'DROP VIEW vw_usuario;'
-  var removeOld2 = 'DROP VIEW vw_tags;'
-  var removeOld3 = 'DROP VIEW dados_desnomalizado;'
-  var removeOld4 = 'DROP VIEW vw_objeto_acesso_statics;'
+  var removeOld1 = 'DROP VIEW IF EXISTS vw_usuario;'
+  var removeOld2 = 'DROP VIEW IF EXISTS vw_tags;'
+  var removeOld3 = 'DROP VIEW IF EXISTS dados_desnomalizado;'
+  var removeOld4 = 'DROP VIEW IF EXISTS vw_objeto_acesso_statics;'
   return knex.raw(removeOld1).then(function (errD1, resultDel1) {
     knex.raw(removeOld2).then(function (errD2, resultDel2) {
       knex.raw(removeOld3).then(function (errD2, resultDel3) {
