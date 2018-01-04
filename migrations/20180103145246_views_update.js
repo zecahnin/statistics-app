@@ -2,48 +2,40 @@
 exports.up = function(knex, Promise) {
   var queryAcesso = 'CREATE OR REPLACE VIEW vw_objeto_acesso_statics AS ' +
     'SELECT ' +
-    ' pel_conteudo_acesso.id                 AS id,' +
-    'pel_conteudo_acesso.dt_criacao          AS dt_criacao ' +
-    ', ' +
-    'pel_conteudo_acesso.praticaEducativaId  AS ' +
-    'praticaEducativaId, ' +
-    'pel_conteudo_acesso.usuarioId           AS usuarioId, ' +
-    'pel_conteudo_acesso.objetoEducacionalId AS objeto ' +
-    'FROM ' +
+    ' pel_conteudo_acesso.id                 AS id, ' +
+    ' pel_conteudo_acesso.dt_criacao          AS dt_criacao, ' +
+    ' pel_conteudo_acesso.praticaEducativaId  AS praticaEducativaId,' +
+    ' pel_conteudo_acesso.usuarioId           AS usuarioId, ' +
+    ' pel_conteudo_acesso.objetoEducacionalId AS objeto ' +
+    ' FROM ' +
     ' pel_conteudo_acesso ' +
-    'UNION ' +
+    ' UNION ' +
     ' ALL  ' +
-    'SELECT ' +
+    ' SELECT ' +
     ' pel_conteudo_acesso.id                   AS id, ' +
-    ' pel_conteudo_acesso.dt_criacao            AS  ' +
-    ' dt_criacao, ' +
-    ' pel_conteudo_acesso.praticaEducativaId    AS  ' +
-    ' praticaEducativaId,' +
-    ' pel_conteudo_acesso.usuarioId             AS  ' +
-     'usuarioId, ' +
+    ' pel_conteudo_acesso.dt_criacao            AS  dt_criacao, ' +
+    ' pel_conteudo_acesso.praticaEducativaId    AS  praticaEducativaId, ' +
+    ' pel_conteudo_acesso.usuarioId             AS  usuarioId, ' +
     ' pel_conteudo_acesso.objetoInformacionalId AS objeto  ' +
     'FROM ' +
     ' pel_conteudo_acesso  ' +
-    'WHERE ' +
+    ' WHERE ' +
     ' (pel_conteudo_acesso.objetoInformacionalId IS NOT NULL)  ' +
     'UNION ' +
     ' ALL  ' +
     'SELECT ' +
     ' pel_conteudo_acesso.id                   AS id, ' +
-    ' pel_conteudo_acesso.dt_criacao            AS  ' +
-    ' dt_criacao, ' +
-    ' pel_conteudo_acesso.praticaEducativaId    AS  ' +
-    ' praticaEducativaId, ' +
-    ' pel_conteudo_acesso.usuarioId             AS  ' +
-    ' usuarioId, ' +
+    ' pel_conteudo_acesso.dt_criacao            AS  dt_criacao,' +
+    ' pel_conteudo_acesso.praticaEducativaId    AS  praticaEducativaId, ' +
+    ' pel_conteudo_acesso.usuarioId             AS  usuarioId, ' +
     ' pel_conteudo_acesso.elementoEducacionalId AS objeto ' +
     'FROM ' +
     ' pel_conteudo_acesso ' +
-    'WHERE ' +
+    ' WHERE ' +
     ' (pel_conteudo_acesso.elementoEducacionalId IS NOT NULL) ' +
     'UNION ' +
     ' ALL  ' +
-    'SELECT ' +
+    ' SELECT ' +
     ' pe.id                  AS id, ' +
     ' pe.dt_criacao           AS dt_criacao, ' +
     ' pe.id                   AS praticaEducativaId, ' +
@@ -53,7 +45,7 @@ exports.up = function(knex, Promise) {
     ' (pel_pratica_educativa pe ' +
     ' JOIN pel_objeto_aprendizagem ao ' +
     ' ON(((pe.objetoAprendizagemId = ao.id) AND ' +
-    ' (ao.objetoAprendizagemTipoId = 4)))); '
+    ' (ao.objetoAprendizagemTipoId = 4)))); ';
 
   var queryDadosDesnomalizado = 'CREATE OR REPLACE VIEW dados_desnomalizado AS ' +
     'SELECT' +
@@ -125,7 +117,7 @@ exports.up = function(knex, Promise) {
     ' LEFT JOIN pel_municipio muni ' +
     ' ON((muni.id = pu.municipioId))) ' +
     ' LEFT JOIN pel_estado est ' +
-    ' ON((muni.estadoId = est.id)))'
+    ' ON((muni.estadoId = est.id)));'
 
   var queryTags = 'CREATE OR REPLACE VIEW vw_tags AS ' +
     'SELECT ' +
@@ -141,7 +133,7 @@ exports.up = function(knex, Promise) {
     ' ON(((atag.objetoAprendizagemId = voa.objeto) AND ' +
     ' (voa.usuarioId NOT IN (2,3,4,5,6,7,8,9,10))))) ' +
     ' JOIN pel_objeto_aprendizagem oa ' +
-    ' ON((voa.objeto = oa.id))) '
+    ' ON((voa.objeto = oa.id))); '
 
   var queryUsuario = 'CREATE OR REPLACE VIEW vw_usuario ' +
     'AS ' +
@@ -176,31 +168,28 @@ exports.up = function(knex, Promise) {
     'dados_desnomalizado.dt_acesso AS dt_acesso,\'atividade\' AS tipo,' +
     'dados_desnomalizado.usuarioId AS usuarioId ' +
     'from dados_desnomalizado ' +
-    'group by dados_desnomalizado.dt_acesso,dados_desnomalizado.usuarioId' +
-    'GO'
+    'group by dados_desnomalizado.dt_acesso,dados_desnomalizado.usuarioId;';
 
   var removeOld1 = 'DROP VIEW IF EXISTS vw_tags;'
   var removeOld2 = 'DROP VIEW IF EXISTS dados_desnomalizado;'
   var removeOld3 = 'DROP VIEW IF EXISTS vw_objeto_acesso;'
   var removeOld4 = 'DROP VIEW IF EXISTS vw_objeto_acesso_statics;'
+  const promiseDelete = [];
+  promiseDelete.push(knex.raw(removeOld1));
+  promiseDelete.push(knex.raw(removeOld2));
+  promiseDelete.push(knex.raw(removeOld3));
+  promiseDelete.push(knex.raw(removeOld4));
+  promiseDelete.push(knex.raw(queryAcesso));
+  promiseDelete.push(knex.raw(queryDadosDesnomalizado));
+  promiseDelete.push(knex.raw(queryTags));
+  promiseDelete.push(knex.raw(queryUsuario));
 
-  return knex.raw(removeOld1).then(function (errD1, resultDel1) {
-    knex.raw(removeOld2).then(function (errD2, resultDel2) {
-      knex.raw(removeOld3).then(function (errD2, resultDel3) {
-        knex.raw(removeOld4).then(function (errD3, resultDel4) {
-          knex.raw(queryAcesso).then(function (err1, result1) {
-            knex.raw(queryDadosDesnomalizado).then(function (err2, result2) {
-              knex.raw(queryTags).then(function (err3, result3) {
-                knex.raw(queryUsuario).then(function (err4, result4) {
-                  console.log(result1, result2, result3, result4)
-                })
-              })
-            })
-          })
-        })
-      })
-    })
-  })
+  const psPromise = Promise.all(promiseDelete);
+  return psPromise.then(function(usuarioPromise) {
+    console.log(usuarioPromise);
+  }).catch(function(error) {
+    console.log('Error XXXXXXX', error);
+  });
 }
 
 exports.down = function(knex, Promise) {
