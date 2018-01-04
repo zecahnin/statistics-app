@@ -170,11 +170,13 @@ exports.up = function(knex, Promise) {
     'from dados_desnomalizado ' +
     'group by dados_desnomalizado.dt_acesso,dados_desnomalizado.usuarioId;';
 
+  var removeOld0 = 'DROP TABLE IF EXISTS vw_tags;'
   var removeOld1 = 'DROP VIEW IF EXISTS vw_tags;'
   var removeOld2 = 'DROP VIEW IF EXISTS dados_desnomalizado;'
   var removeOld3 = 'DROP VIEW IF EXISTS vw_objeto_acesso;'
   var removeOld4 = 'DROP VIEW IF EXISTS vw_objeto_acesso_statics;'
   const promiseDelete = [];
+  promiseDelete.push(knex.raw(removeOld0));
   promiseDelete.push(knex.raw(removeOld1));
   promiseDelete.push(knex.raw(removeOld2));
   promiseDelete.push(knex.raw(removeOld3));
