@@ -1,5 +1,5 @@
 <template>
-  <div :options="options" :dataLoad="transformToChart(dataLoad)"></div>
+  <div :options="options" :dataLoad="transformToChart(dataLoad)" :disabebleAvg="disabebleAvg"></div>
 </template>
 
 <script>
@@ -12,7 +12,7 @@ export default{
   components: {
     Highcharts
   },
-  props: ['dataLoad'],
+  props: ['dataLoad', 'disabebleAvg'],
   data () {
     return {
       options: {
@@ -67,7 +67,9 @@ export default{
         {series: dataParse},
         {xAxis: {categories: dataCategories, labels: {rotation: -90}}})
       this.target = Highcharts.chart(this.$el, options)
-      this.target.addSeries(this.dataLoad.avgSerie)
+      if (this.disabebleAvg === undefined) {
+        this.target.addSeries(this.dataLoad.avgSerie)
+      }
     },
     transformToChart: function (data) {
       return this.transformData(data)

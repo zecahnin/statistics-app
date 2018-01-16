@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row" style="background-color: #f7f7f7;">
-      <app-menu></app-menu>
+      <!--<app-menu></app-menu>-->
 
       <el-modal ref="modalDescription" :okTitle="'OK'" :closeTitle="''">
         <div class="text-center">
@@ -14,21 +14,7 @@
       </el-modal>
 
       <div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Mídia</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <multiselect class="size-input30" v-model="filter.midia.value" :options="filter.midia.options" @input="updateValueAction(null)"></multiselect>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="col-md-10 col-md-offset-1 main">
           <div class="text-center">
             <div class="btn-group" role="group" aria-label="...">
               <button :class="{ active: isActive == 'b1' }" type="button" class="btn btn-default" @click="updateValueAction('tudo'), isActive = 'b1'">Tudo</button>
@@ -42,34 +28,65 @@
           </div>
         </div>
       </div>
-
-      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <div class="row">
-          <div class="col-xl-3 col-lg-6 col-12">
-            <button type="button" class="btn btn-primary">
-              Acessos <span class="badge badge-light">{{getReportBigNumber(asyncData)}}</span>
-            </button>
-            <button type="button" class="btn btn-primary">
-              Saldo Acumulado <span class="badge badge-light">{{getReportBigNumberSaldoAcumulado(asyncData)}}
-            <div v-if="getReportBigNumberSaldoAcumulado(asyncData) > 0" style="float:left">
-                <i class="fa fa-arrow-up" style="color: blue"></i>
-              </div>
-              <div v-else style="float:left">
-                <i class="fa fa-arrow-down"style="color: red"></i>
-              </div>
-            </span>
-            </button>
-          </div>
+      <div class="col-md-10 col-md-offset-1 main">
+        <div class="alert" role="alert"
+             v-bind:class="{'alert-success': getReportUserTotalBigNumber(asyncDataUser) > 0, 'alert-danger': getReportUserTotalBigNumber(asyncDataUser) < 0}"
+             style="float:left; margin-right: 2%; width: 48%">
+          <h2 class="alert-heading">{{getReportUserTotalBigNumber(asyncDataUser)}}</h2>
+          <h4 class="alert-heading">Usuários</h4>
+        </div>
+        <div class="alert" role="alert"
+             v-bind:class="{'alert-success': getReportUserAcessoBigNumber(asyncDataUser) > 0, 'alert-danger': getReportUserAcessoBigNumber(asyncDataUser) < 0}"
+             style="float:left; margin-left: 2%; width: 48%">
+          <h2 class="alert-heading">{{getReportUserAcessoBigNumber(asyncDataUser)}}</h2>
+          <h4 class="alert-heading">Acessos Únicos!</h4>
         </div>
       </div>
-      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <h3>Média e acesso aos conteúdos</h3>
+
+      <div class="col-md-10 col-md-offset-1 main">
+        <h3>Captação de usuário X Atratividade de conteúdo</h3>
+        <line-chart :dataLoad="asyncDataUser" :disabebleAvg="'true'"></line-chart>
+      </div>
+
+      <div class="col-md-10 col-md-offset-1 main">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Mídia</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>
+              <multiselect class="size-input30" v-model="filter.midia.value" :options="filter.midia.options" @input="updateValueAction(null)"></multiselect>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-md-10 col-md-offset-1 main">
+
+        <div class="alert" role="alert"
+             v-bind:class="{'alert-success': getReportBigNumber(asyncData) > 0, 'alert-danger': getReportBigNumber(asyncData) < 0}"
+             style="float:left; margin-right: 2%; width: 48%">
+          <h2 class="alert-heading">{{getReportBigNumber(asyncData)}}</h2>
+          <h4 class="alert-heading">Total de Acessos</h4>
+        </div>
+        <div class="alert " role="alert"
+             v-bind:class="{'alert-success': getReportBigNumberSaldoAcumulado(asyncData) > 0, 'alert-danger': getReportBigNumberSaldoAcumulado(asyncData) < 0}"
+             style="float:left; margin-left: 2%; width: 48%">
+          <h2 class="alert-heading">{{getReportBigNumberSaldoAcumulado(asyncData)}}</h2>
+          <h4 class="alert-heading">Saldo Acumulado</h4>
+        </div>
+      </div>
+      <div class="col-md-10 col-md-offset-1 main">
         <div class="text-center">
         <div v-if="asyncData.data && asyncData.data.length <=0">Não foram encontrados resultados</div>
         </div>
         <line-chart :dataLoad="asyncData"></line-chart>
       </div>
-      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <div class="col-md-10 col-md-offset-1 main">
         <h3>Detalhamentos dos acessos</h3>
         <table class="table">
           <thead>
@@ -102,7 +119,7 @@
           </tbody>
         </table>
       </div>
-      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <div class="col-md-10 col-md-offset-1 main">
         <h3>Acessos por Tag dos objetos</h3>
         <tag-cloud :dataLoad="asyncDataTag"></tag-cloud>
       </div>
@@ -213,6 +230,45 @@ export default {
         }
         let data = await this.loadReport(filter)
         this.asyncDataConclusao = data
+      } catch (err) {
+        console.log('aaaaa', err)
+      }
+    },
+    async getReportUserDate (numberDays) {
+      try {
+        let filter = {
+          include: [{
+            model: 'vw_usuario',
+            avg: true
+          }],
+          rows: [{
+            field: 'tipo',
+            model: 'vw_usuario'
+          }],
+          expr: [{
+            field: 'usuarioId',
+            model: 'vw_usuario',
+            func: 'count',
+            order: 'desc'
+          }],
+          cols: [{
+            field: 'dt_acesso',
+            model: 'vw_usuario',
+            format: 'dd/mm/yyyy',
+            limit: 6
+          }],
+          where: []
+        }
+        if (numberDays) {
+          filter.where.push({
+            field: 'dt_acesso',
+            model: 'vw_usuario',
+            op: '>=',
+            interval: numberDays
+          })
+        }
+        let data = await this.loadReport(filter)
+        this.asyncDataUser = data
       } catch (err) {
         console.log('aaaaa', err)
       }
@@ -350,6 +406,28 @@ export default {
       })
       return count
     },
+    getReportUserAcessoBigNumber (array) {
+      if (!array.data) return 0
+      let count = 0
+      array.data.forEach(function (item) {
+        if (item['_0'] === 'atividade') {
+          count += item['_1']
+        }
+      })
+      return count
+    },
+    getReportUserTotalBigNumber (array) {
+      if (!array.data) return 0
+
+      let count = 0
+      array.data.forEach(function (item) {
+        if (item['_0'] === 'novo') {
+          count += item['_1']
+        }
+      })
+      return count
+    },
+
     getReportBigNumberSaldoAcumulado (array) {
       if (!array.data) return 0
 
@@ -430,6 +508,9 @@ export default {
     this.getReportDate()
     this.getReportTag()
     this.loadFilter()
+
+    // usuario
+    this.getReportUserDate()
   },
   data () {
     return {
@@ -439,6 +520,7 @@ export default {
         options: ['list', 'of', 'options']
       },
       asyncData: [],
+      asyncDataUser: [],
       asyncDataTag: {},
       asyncDataConclusao: [],
       asyncDataDetalhamentoOne: [],

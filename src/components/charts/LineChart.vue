@@ -2,7 +2,7 @@
 import Chart from './Chart'
 export default{
   extends: Chart,
-  props: ['dataLoad'],
+  props: ['dataLoad', 'disabebleAvg'],
   data () {
     return {
       options: {

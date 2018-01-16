@@ -200,12 +200,14 @@ module.exports = function () {
               result.data = projectNames;
               return result;
             }).then(function(result) {
-              queryAvg.select().then(function(projectNamesAvg){
-                result.avg = projectNamesAvg;
-                res.send(result);
-              }).catch(function(error) {
-                console.error(error);
-              });
+              if(!req.query.filter.include[0].model.avg){
+                queryAvg.select().then(function(projectNamesAvg){
+                  result.avg = projectNamesAvg;
+                  res.send(result);
+                }).catch(function(error) {
+                  console.error(error);
+                });
+              }
             });
           });
       }else{
