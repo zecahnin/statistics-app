@@ -29,30 +29,40 @@
         </div>
       </div>
       <div class="col-md-10 col-md-offset-1 main">
-        <div class="alert" role="alert"
-             v-bind:class="{'alert-success': getReportUserTotalBigNumber(asyncDataUser) > 0, 'alert-danger': getReportUserTotalBigNumber(asyncDataUser) < 0}"
-             style="float:left; margin-right: 2%; width: 48%">
-          <h2 class="alert-heading">{{getReportUserTotalBigNumber(asyncDataUser)}}</h2>
-          <h4 class="alert-heading">Usuários</h4>
-        </div>
-        <div class="alert" role="alert"
-             v-bind:class="{'alert-success': getReportUserAcessoBigNumber(asyncDataUser) > 0, 'alert-danger': getReportUserAcessoBigNumber(asyncDataUser) < 0}"
-             style="float:left; margin-left: 2%; width: 48%">
-          <h2 class="alert-heading">{{getReportUserAcessoBigNumber(asyncDataUser)}}</h2>
-          <h4 class="alert-heading">Acessos Únicos!</h4>
+        <div class="row" style="height: 150px;">
+          <div ref="loading" v-show="asyncDataUserLoading" class="wrap-loading" style="float:left; margin-right: 2%; width: 48%; height: 100px;">
+            <div class="loading loading-1"></div>
+          </div>
+          <div v-show="!asyncDataUserLoading" class="alert col-lg-1" role="alert"
+               v-bind:class="{'alert-success': getReportUserTotalBigNumber(asyncDataUser) > 0, 'alert-danger': getReportUserTotalBigNumber(asyncDataUser) < 0}"
+               style="float:left; margin-right: 2%; width: 48%">
+            <h2 class="alert-heading">{{getReportUserTotalBigNumber(asyncDataUser)}}</h2>
+            <h4 class="alert-heading">Usuários</h4>
+          </div>
+          <div ref="loading" v-show="asyncDataUserLoading" class="wrap-loading" style="float:left; margin-right: 2%; width: 48%; height: 100px;">
+            <div class="loading loading-1"></div>
+          </div>
+          <div v-show="!asyncDataUserLoading" class="alert" role="alert"
+               v-bind:class="{'alert-success': getReportUserAcessoBigNumber(asyncDataUser) > 0, 'alert-danger': getReportUserAcessoBigNumber(asyncDataUser) < 0}"
+               style="float:left; margin-left: 2%; width: 48%">
+            <h2 class="alert-heading">{{getReportUserAcessoBigNumber(asyncDataUser)}}</h2>
+            <h4 class="alert-heading">Acessos Únicos!</h4>
+          </div>
         </div>
       </div>
 
       <div class="col-md-10 col-md-offset-1 main">
         <h3>Captação de usuário X Atratividade de conteúdo</h3>
-        <line-chart :dataLoad="asyncDataUser" :disabebleAvg="'true'"></line-chart>
+        <line-chart :loading="asyncDataUserLoading" :dataLoad="asyncDataUser" :disabebleAvg="'true'"></line-chart>
       </div>
+      <br>
+      <br>
 
       <div class="col-md-10 col-md-offset-1 main">
         <table class="table">
           <thead>
           <tr>
-            <th>Mídia</th>
+            <th><h1>Mídia</h1></th>
           </tr>
           </thead>
           <tbody>
@@ -66,25 +76,32 @@
       </div>
 
       <div class="col-md-10 col-md-offset-1 main">
-
-        <div class="alert" role="alert"
-             v-bind:class="{'alert-success': getReportBigNumber(asyncData) > 0, 'alert-danger': getReportBigNumber(asyncData) < 0}"
-             style="float:left; margin-right: 2%; width: 48%">
-          <h2 class="alert-heading">{{getReportBigNumber(asyncData)}}</h2>
-          <h4 class="alert-heading">Total de Acessos</h4>
-        </div>
-        <div class="alert " role="alert"
-             v-bind:class="{'alert-success': getReportBigNumberSaldoAcumulado(asyncData) > 0, 'alert-danger': getReportBigNumberSaldoAcumulado(asyncData) < 0}"
-             style="float:left; margin-left: 2%; width: 48%">
-          <h2 class="alert-heading">{{getReportBigNumberSaldoAcumulado(asyncData)}}</h2>
-          <h4 class="alert-heading">Saldo Acumulado</h4>
+        <div class="row" style="height: 150px;">
+          <div ref="loading" v-show="asyncDataLoading" class="wrap-loading" style="float:left; margin-right: 2%; width: 48%; height: 100px;">
+            <div class="loading loading-1"></div>
+          </div>
+          <div v-show="!asyncDataLoading" class="alert" role="alert"
+               v-bind:class="{'alert-success': getReportBigNumber(asyncData) > 0, 'alert-danger': getReportBigNumber(asyncData) < 0}"
+               style="float:left; margin-right: 2%; width: 48%">
+            <h2 class="alert-heading">{{getReportBigNumber(asyncData)}}</h2>
+            <h4 class="alert-heading">Total de Acessos</h4>
+          </div>
+          <div ref="loading" v-show="asyncDataLoading" class="wrap-loading" style="float:left; margin-right: 2%; width: 48%; height: 100px;">
+            <div class="loading loading-1"></div>
+          </div>
+          <div v-show="!asyncDataLoading" class="alert " role="alert"
+               v-bind:class="{'alert-success': getReportBigNumberSaldoAcumulado(asyncData) > 0, 'alert-danger': getReportBigNumberSaldoAcumulado(asyncData) < 0}"
+               style="float:left; margin-left: 2%; width: 48%">
+            <h2 class="alert-heading">{{getReportBigNumberSaldoAcumulado(asyncData)}}</h2>
+            <h4 class="alert-heading">Saldo Acumulado</h4>
+          </div>
         </div>
       </div>
       <div class="col-md-10 col-md-offset-1 main">
         <div class="text-center">
         <div v-if="asyncData.data && asyncData.data.length <=0">Não foram encontrados resultados</div>
         </div>
-        <line-chart :dataLoad="asyncData"></line-chart>
+        <line-chart :loading="asyncDataLoading" :dataLoad="asyncData"></line-chart>
       </div>
       <div class="col-md-10 col-md-offset-1 main">
         <h3>Detalhamentos dos acessos</h3>
@@ -121,7 +138,7 @@
       </div>
       <div class="col-md-10 col-md-offset-1 main">
         <h3>Acessos por Tag dos objetos</h3>
-        <tag-cloud :dataLoad="asyncDataTag"></tag-cloud>
+        <tag-cloud :loading="asyncDataTagLoading" :dataLoad="asyncDataTag"></tag-cloud>
       </div>
     </div>
   </div>
@@ -179,9 +196,10 @@ export default {
     },
     updateValueAction (valor) {
       this.loadFilter()
-      this.getReportConclusao()
+      // this.getReportConclusao()
       this.getReportDate(valor)
-      this.getReportTag()
+      this.getReportUserDate(valor)
+      this.getReportTag(valor)
     },
     async getReportConclusao () {
       try {
@@ -236,6 +254,7 @@ export default {
     },
     async getReportUserDate (numberDays) {
       try {
+        this.asyncDataUserLoading = true
         let filter = {
           include: [{
             model: 'vw_usuario',
@@ -268,6 +287,7 @@ export default {
           })
         }
         let data = await this.loadReport(filter)
+        this.asyncDataUserLoading = false
         this.asyncDataUser = data
       } catch (err) {
         console.log('aaaaa', err)
@@ -275,6 +295,7 @@ export default {
     },
     async getReportDate (numberDays) {
       try {
+        this.asyncDataLoading = true
         let filter = {
           include: [{
             model: 'dados_desnomalizado'
@@ -362,13 +383,15 @@ export default {
           })
         }
         let data = await this.loadReport(filter)
+        this.asyncDataLoading = false
         this.asyncData = data
       } catch (err) {
         console.log('aaaaa', err)
       }
     },
-    async getReportTag () {
+    async getReportTag (numberDays) {
       try {
+        this.asyncDataTagLoading = true
         let filterTag = {
           include: [{
             model: 'vw_tags'
@@ -391,7 +414,16 @@ export default {
             }
           ]
         }
+        if (numberDays) {
+          filterTag.where.push({
+            field: 'dt_acesso',
+            model: 'dados_desnomalizado',
+            op: '>=',
+            interval: numberDays
+          })
+        }
         let dataTag = await this.loadReport(filterTag)
+        this.asyncDataTagLoading = false
         this.asyncDataTag = dataTag
       } catch (err) {
         console.log('2222', err)
@@ -504,12 +536,10 @@ export default {
     }
   },
   mounted: function () {
-    this.getReportConclusao()
+    // this.getReportConclusao()
     this.getReportDate()
     this.getReportTag()
     this.loadFilter()
-
-    // usuario
     this.getReportUserDate()
   },
   data () {
@@ -520,7 +550,10 @@ export default {
         options: ['list', 'of', 'options']
       },
       asyncData: [],
+      asyncDataLoading: false,
       asyncDataUser: [],
+      asyncDataUserLoading: false,
+      asyncDataTagLoading: false,
       asyncDataTag: {},
       asyncDataConclusao: [],
       asyncDataDetalhamentoOne: [],
@@ -567,6 +600,90 @@ export default {
   }
   .btn-group{
     z-index: 0;
+  }
+  @keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @-moz-keyframes spin {
+    0% {
+      -moz-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -moz-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @-o-keyframes spin {
+    0% {
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @-ms-keyframes spin {
+    0% {
+      -ms-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -ms-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
+  html, body {
+    height: 100%;
+  }
+  .row {
+    height: 300px;
+  }
+
+  .wrap-loading {
+    background: #ccc;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .loading {
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    animation: spin 750ms infinite linear;
+    -webkit-animation: spin 750ms infinite linear;
+    -moz-animation: spin 750ms infinite linear;
+    -o-animation: spin 750ms infinite linear;
+    -ms-animation: spin 750ms infinite linear;
+  }
+  .loading-1 {
+    width: 24px;
+    height: 24px;
+    margin-top: -12px;
+    margin-left: -12px;
+    border: 2px solid #ebebeb;
+    border-top-color: #ccc;
   }
 
 </style>

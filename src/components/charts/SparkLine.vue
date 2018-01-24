@@ -65,7 +65,7 @@ export default{
             if (this.point.date === undefined) {
               return '<b>' + this.series.name + '</b><br/>' + this.point.status
             } else {
-              return '<b>' + this.series.name + '</b><br/>' + this.point.date + ' - ' + this.point.status
+              return '<b>Período' + (this.point.x + 1) + ': ' + this.point.y + ' Acessos</b><br/>' + this.point.date
             }
           },
           borderWidth: 0,
@@ -106,9 +106,10 @@ export default{
     this.propCol.forEach(function (itemHeaderCol, index) {
       element.data.push({
         x: index,
+        name: 'evolução',
         y: self.dataLoad[itemHeaderCol.id],
         date: itemHeaderCol.value,
-        status: 'Baseline'
+        status: 'Acessos: ' + self.dataLoad[itemHeaderCol.id]
       })
     })
     var statistics = 0
