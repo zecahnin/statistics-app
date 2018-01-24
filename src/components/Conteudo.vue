@@ -195,11 +195,15 @@ export default {
       this.$refs.modalDescription.show()
     },
     updateValueAction (valor) {
-      this.loadFilter()
-      // this.getReportConclusao()
-      this.getReportDate(valor)
-      this.getReportUserDate(valor)
-      this.getReportTag(valor)
+      if (valor !== 'tudo') {
+        this.getReportDate(valor)
+        this.getReportUserDate(valor)
+        this.getReportTag(valor)
+      } else {
+        this.getReportDate()
+        this.getReportUserDate()
+        this.getReportTag()
+      }
     },
     async getReportConclusao () {
       try {
