@@ -183,17 +183,17 @@
         </div>
       </div>
       <div class="col-md-10 col-md-offset-1 main">
-        <h3>Distribuição</h3>
+        <h3>Distribuição de Tarefas</h3>
         <div>
           <div class="col-lg-1 alert alert-info" role="alert"
                style="float:left; margin-right: 2%; width: 48%">
             <h2 class="alert-heading">{{getReportDistribuicaoBigNumber(asyncDataDistribuicao, 'aguardando')}}</h2>
-            <h4 class="alert-heading">Aguardando</h4>
+            <h4 class="alert-heading">Tarefa Aguardando revisão</h4>
           </div>
           <div class="col-lg-1 alert alert-info" role="alert"
                style="float:left; margin-right: 2%; width: 48%">
             <h2 class="alert-heading">{{getReportDistribuicaoBigNumber(asyncDataDistribuicao, 'concluido')}}</h2>
-            <h4 class="alert-heading">Concluídas</h4>
+            <h4 class="alert-heading">Tarefas Concluídas</h4>
           </div>
         </div>
         <br>
