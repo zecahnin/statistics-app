@@ -179,8 +179,7 @@
       <div class="col-md-10 col-md-offset-1 main">
         <h3>Colaboradores</h3>
         <div>
-          Funnel
-          <funnel :dataLoad="asyncDataConvites" :nameSerie="'Convidados'"></funnel>
+          <funnel :dataLoad="asyncDataConvites" :nameSerie="'Convidados'" style="float:left; margin-right: 2%; width: 48%"></funnel>
         </div>
       </div>
       <div class="col-md-10 col-md-offset-1 main">
@@ -288,6 +287,10 @@ export default {
           },
           {
             field: 'titulo',
+            model: 'vw_tarefas'
+          },
+          {
+            field: 'tarefa_status',
             model: 'vw_tarefas'
           },
           {

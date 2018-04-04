@@ -1,6 +1,6 @@
 {
   "name": "statistics-app",
-  "version": "1.0.6n",
+  "version": "1.0.7n",
   "main": "server.js",
   "lockfileVersion": 1,
   "scripts": {

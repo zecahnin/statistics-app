@@ -27,7 +27,7 @@ export default{
           type: 'funnel'
         },
         title: {
-          text: 'Sales funnel'
+          text: ''
         },
         plotOptions: {
           series: {
@@ -36,11 +36,7 @@ export default{
               format: '<b>{point.name}</b> ({point.y:,.0f})',
               color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
               softConnector: true
-            },
-            center: ['40%', '50%'],
-            neckWidth: '30%',
-            neckHeight: '25%',
-            width: '80%'
+            }
           }
         },
         legend: {
@@ -58,7 +54,6 @@ export default{
   methods: {
     load () {
       var self = this
-      self.options.title.text = self.nameSerie
       var options = {}
       options.series = []
       options.series[0] = {}
