@@ -14,7 +14,7 @@ module.exports = function () {
           host : 'localhost',
           user : 'root',
           password : 'zeca',
-          database : 'production_api'
+          database : 'production_api_selecao'
         }
       }
       var knex = require('knex')({
@@ -45,7 +45,7 @@ module.exports = function () {
           host : 'localhost',
           user : 'root',
           password : 'zeca',
-          database : 'production_api'
+          database : 'production_api_selecao'
         }
       }
       var knex = require('knex')({
@@ -155,22 +155,27 @@ module.exports = function () {
           }
           var strDate = "'"+arrayDate.join('-')+"'"
           colName =  'DATE_FORMAT('+colName+','+strDate+')';
+          queryCol.column(knex.raw(' distinct ('+colName+') as col'));
+        }else{
+          queryCol.column(knex.raw(' distinct ('+orgColName+') as col'));
         }
-        queryCol.column(knex.raw(' distinct ('+colName+') as date'));
         if(arryFilterWhere.length!=0){
           queryCol.whereRaw(arryFilterWhere.join(' AND '));
-        }
-
-        queryCol.orderByRaw('date  ASC')
+        };
+        queryCol.orderByRaw('col  ASC')
+        var newArrayDate = [];
         queryCol.select()
-          .then(function(rows) {
+          .then(function(rows) {;
             if(req.query.filter.cols[0].limit){
               var quarterNumber = Math.ceil(rows.length / req.query.filter.cols[0].limit)
               var chuckArray = _defaults.chunk(rows, quarterNumber);
-              var newArrayDate = [];
-              chuckArray.forEach(function(itemChuck){
-                newArrayDate.push({date:[itemChuck[0].date, itemChuck[(itemChuck.length - 1)].date]});
-              });
+                chuckArray.forEach(function(itemChuck){
+                  if(req.query.filter.cols[0].format){
+                    newArrayDate.push({col:[itemChuck[0].col, itemChuck[(itemChuck.length - 1)].col]});
+                  }else{
+                    newArrayDate.push({col:[itemChuck[0].col]});
+                  }
+                });
               rows = newArrayDate;
             }
             for (var key in expr) {
@@ -178,14 +183,19 @@ module.exports = function () {
               var fieldCol = colName;
               rows.forEach(function(row, indexcol){
                 var clause =''
-                if(Array.isArray(row.date)){
-                  clause = ' BETWEEN \''+row.date[0]+'\' AND \''+row.date[1]+'\'';
-                  row.date = row.date.join(' - ');
+                if(Array.isArray(row.col)){
+                  if(req.query.filter.cols[0].format){
+                    clause = ' BETWEEN \''+row.col[0]+'\' AND \''+row.col[1]+'\'';
+                    row.col = row.col.join(' - ');
+                  }else{
+                    clause= ' = \''+row.col[0]+'\'';
+                    row.col = row.col[0];
+                  }
                 }else{
-                  clause = ' = \''+row.date+'\'';
+                  clause = ' = \''+row.col+'\'';
                 }
                 var colWhere = 'COUNT(case when '+colName+' '+clause+' then '+fieldCol+' else '+valueCol+' end) as _'+indexCol+'';
-                header.col.push({id:'_'+indexCol, name: req.query.filter.cols[0].model+'.'+req.query.filter.cols[0].field, value: row.date});
+                header.col.push({id:'_'+indexCol, name: req.query.filter.cols[0].model+'.'+req.query.filter.cols[0].field, value: row.col});
                 query.column(knex.raw(colWhere));
                 queryAvg.column(knex.raw('COUNT(case when '+colName+' '+clause+' then '+fieldCol+' else '+valueCol+' end)/COUNT( DISTINCT '+avgItem.join(",")+') as _'+indexCol+''))
                 indexCol++

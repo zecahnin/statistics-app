@@ -13,6 +13,42 @@
         </div>
       </el-modal>
 
+
+      <el-modal ref="modalDescriptionDistribuicao" :okTitle="'OK'" :closeTitle="''">
+        <div class="text-center">
+          <h3>Objetos</h3>
+          <div>
+            <table class="table">
+              <thead>
+              <tr>
+                <th>id</th>
+                <th>Objeto</th>
+                <th>Data de criação</th>
+                <th>Data de atualização</th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(dataRow, keyRow) of asyncDataDetalhamentoDistribuicao.data">
+                  <td>
+                    {{dataRow['_0']}}
+                  </td>
+                  <td>
+                    {{dataRow['_1']}}
+                  </td>
+                  <td>
+                    {{dataRow['_2']}}
+                  </td>
+                  <td>
+                    {{dataRow['_3']}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--<bar-chart :dataLoad="asyncDataDetalhamentoDistribuicao"></bar-chart>-->
+        </div>
+      </el-modal>
+
       <div>
         <div class="col-md-10 col-md-offset-1 main">
           <div class="text-center">
@@ -140,6 +176,48 @@
         <h3>Acessos por Tag dos objetos</h3>
         <tag-cloud :loading="asyncDataTagLoading" :dataLoad="asyncDataTag"></tag-cloud>
       </div>
+      <div class="col-md-10 col-md-offset-1 main">
+        <h3>Colaboradores</h3>
+        <div>
+          Funnel
+          <funnel :dataLoad="asyncDataConvites" :nameSerie="'Convidados'"></funnel>
+        </div>
+      </div>
+      <div class="col-md-10 col-md-offset-1 main">
+        <h3>Distribuição</h3>
+        <div>
+          <div class="col-lg-1 alert alert-info" role="alert"
+               style="float:left; margin-right: 2%; width: 48%">
+            <h2 class="alert-heading">{{getReportDistribuicaoBigNumber(asyncDataDistribuicao, 'aguardando')}}</h2>
+            <h4 class="alert-heading">Aguardando</h4>
+          </div>
+          <div class="col-lg-1 alert alert-info" role="alert"
+               style="float:left; margin-right: 2%; width: 48%">
+            <h2 class="alert-heading">{{getReportDistribuicaoBigNumber(asyncDataDistribuicao, 'concluido')}}</h2>
+            <h4 class="alert-heading">Concluídas</h4>
+          </div>
+        </div>
+        <br>
+        <table class="table" :loading="asyncDataDistribuicaoLoading">
+          <thead>
+          <tr>
+            <th>Usuário</th>
+            <th>Qtd de tarefas</th>
+            <th>Status das tarefas</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="(dataRow, keyRow) of asyncDataDistribuicao.data">
+            <td><a @click="displayDistribuicaoModal(dataRow['_0'])">{{dataRow['_0']}}</a></td>
+            <td>{{dataRow['_1']}}</td>
+            <td class="spark-cont">
+              <spark-bar :dataLoad="dataRow" :propCol="asyncDataDistribuicao.header.col" :statistics="statistics"></spark-bar>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </div>
 </template>
@@ -152,14 +230,17 @@ import AppMenu from '@/components/layout/AppMenu'
 import BarChart from './charts/BarChart.vue'
 import LineChart from './charts/LineChart'
 import SparkLine from './charts/SparkLine'
+import SparkBar from './charts/SparkBar'
+import Funnel from './charts/Funnel'
 import TagCloud from './charts/TagClound'
 import ElModal from './modal/Modal'
 import highchartsMixin from '@/mixins/highcharts'
 import moment from 'moment'
+import * as _ from 'lodash'
 
 export default {
   name: 'conteudo',
-  components: {AppMenu, LineChart, SparkLine, TagCloud, Multiselect, DatePicker, ElModal, BarChart},
+  components: {AppMenu, LineChart, SparkLine, SparkBar, Funnel, TagCloud, Multiselect, DatePicker, ElModal, BarChart},
   mixins: [highchartsMixin],
   computed: {
     ...mapGetters({'query': 'loadReport'})
@@ -194,6 +275,48 @@ export default {
       this.asyncDataDetalhamentoTwo = dataTwo
       this.$refs.modalDescription.show()
     },
+
+    async displayDistribuicaoModal (id) {
+      let filter = {
+        include: [{
+          model: 'vw_tarefas'
+        }],
+        rows: [
+          {
+            field: 'objetoAprendizagemId',
+            model: 'vw_tarefas'
+          },
+          {
+            field: 'titulo',
+            model: 'vw_tarefas'
+          },
+          {
+            field: 'dt_criacao',
+            format: 'dd/mm/yyyy',
+            model: 'vw_tarefas'
+          },
+          {
+            field: 'dt_atualizacao',
+            format: 'dd/mm/yyyy',
+            model: 'vw_tarefas'
+          }
+        ],
+        expr: [],
+        where: [
+          {
+            field: 'nome',
+            model: 'vw_tarefas',
+            op: '=',
+            value: id
+          }
+        ]
+      }
+      let dataOne = await this.loadReport(filter)
+      this.asyncDataDetalhamentoDistribuicao = dataOne
+      console.log(dataOne)
+      this.$refs.modalDescriptionDistribuicao.show()
+    },
+
     updateValueAction (valor) {
       if (valor !== 'tudo') {
         this.getReportDate(valor)
@@ -393,6 +516,85 @@ export default {
         console.log('aaaaa', err)
       }
     },
+    getReportDistribuicaoBigNumber (data, type) {
+      if (data.data) {
+        let valueElement = 0
+        let idHeader = _.result(_.find(data.header.col, function (description) {
+          return description.value === type
+        }), 'id')
+
+        data.data.forEach(function (item) {
+          valueElement += item[idHeader]
+        })
+        return valueElement
+      }
+    },
+    async getReportDistribuicao (numberDays) {
+      try {
+        this.asyncDataDistribuicaoLoading = true
+        let filter = {
+          include: [{
+            model: 'vw_tarefas'
+          }],
+          rows: [{
+            field: 'nome',
+            model: 'vw_tarefas'
+          }],
+          expr: [{
+            field: 'id',
+            model: 'vw_tarefas',
+            func: 'count',
+            order: 'desc'
+          }],
+          cols: [{
+            field: 'tarefa_status',
+            model: 'vw_tarefas',
+            limit: 6
+          }],
+          where: []
+        }
+
+        let data = await this.loadReport(filter)
+        this.asyncDataDistribuicaoLoading = false
+        this.asyncDataDistribuicao = data
+      } catch (err) {
+        console.log('aaaaa', err)
+      }
+    },
+
+    async getReportColaboradores (numberDays) {
+      try {
+        let filter = {
+          include: [{
+            model: 'vw_convites'
+          }],
+          rows: [{
+            field: 'status',
+            model: 'vw_convites'
+          }],
+          expr: [{
+            field: 'id',
+            model: 'vw_convites',
+            func: 'count',
+            order: 'desc'
+          }],
+          where: [
+            {
+              field: 'perfil',
+              model: 'vw_convites',
+              op: '=',
+              value: 'Curador'
+            }
+          ]
+        }
+
+        let data = await this.loadReport(filter)
+        this.asyncDataConvites = data
+      } catch (err) {
+        console.log('aaaa', err)
+      }
+    },
+
     async getReportTag (numberDays) {
       try {
         this.asyncDataTagLoading = true
@@ -545,6 +747,8 @@ export default {
     this.getReportTag()
     this.loadFilter()
     this.getReportUserDate()
+    this.getReportDistribuicao()
+    this.getReportColaboradores()
   },
   data () {
     return {
@@ -554,6 +758,10 @@ export default {
         options: ['list', 'of', 'options']
       },
       asyncData: [],
+      asyncDataConvites: [],
+      asyncDataConvitesLoading: false,
+      asyncDataDistribuicao: [],
+      asyncDataDistribuicaoLoading: false,
       asyncDataLoading: false,
       asyncDataUser: [],
       asyncDataUserLoading: false,
@@ -561,6 +769,7 @@ export default {
       asyncDataTag: {},
       asyncDataConclusao: [],
       asyncDataDetalhamentoOne: [],
+      asyncDataDetalhamentoDistribuicao: [],
       asyncDataDetalhamentoTwo: [],
       periodo: {
         value: '',
