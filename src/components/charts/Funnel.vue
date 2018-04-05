@@ -60,6 +60,18 @@ export default{
       options.series[0].data = []
       options.series[0].name = self.nameSerie
       if (this.dataLoad.data) {
+        var sortArray = ['Em análise', 'Aprovados', 'Ativados']
+        this.dataLoad.data.sort(
+          function (a, b) {                              // Pass a function to the sort that takes 2 elements to compare
+            console.log(a, b)
+            if (a['_0'] === b['_0']) {                    // If the elements both have the same `type`,
+              return a['_0'].localeCompare(b['_0']) // Compare the elements by `name`.
+            } else {                                   // Otherwise,
+              return sortArray.indexOf(a['_0']) - sortArray.indexOf(b['_0']) // Substract indexes, If element `a` comes first in the array, the returned value will be negative, resulting in it being sorted before `b`, and vice versa.
+            }
+          }
+        )
+        console.log(this.dataLoad.data)
         this.dataLoad.data.forEach(function (itemHeaderCol, index) {
           options.series[0].data.push({name: itemHeaderCol['_0'], y: itemHeaderCol['_1']})
         })
