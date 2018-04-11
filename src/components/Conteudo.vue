@@ -286,10 +286,6 @@ export default {
             model: 'vw_tarefas'
           },
           {
-            field: 'titulo',
-            model: 'vw_tarefas'
-          },
-          {
             field: 'tarefa_status',
             model: 'vw_tarefas'
           },
@@ -558,6 +554,7 @@ export default {
         }
 
         let data = await this.loadReport(filter)
+        console.log(data)
         this.asyncDataDistribuicaoLoading = false
         this.asyncDataDistribuicao = data
       } catch (err) {

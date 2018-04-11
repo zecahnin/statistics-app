@@ -164,8 +164,9 @@ module.exports = function () {
         };
         queryCol.orderByRaw('col  ASC')
         var newArrayDate = [];
+        console.log(queryCol.select().toSQL());
         queryCol.select()
-          .then(function(rows) {;
+          .then(function(rows) {
             if(req.query.filter.cols[0].limit){
               var quarterNumber = Math.ceil(rows.length / req.query.filter.cols[0].limit)
               var chuckArray = _defaults.chunk(rows, quarterNumber);
@@ -204,6 +205,7 @@ module.exports = function () {
             if(orderBy.length){
               query.orderByRaw(orderBy.join(', '));
             }
+            console.log(query.select().toSQL());
             query.select().then(function(projectNames) {
               var result = {};
               result.header = header;
