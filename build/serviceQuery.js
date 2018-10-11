@@ -119,7 +119,9 @@ module.exports = function () {
           queryAvg[key](expr[key][0]);
         }
         if(header.row.length!=0){
-          query.groupBy(rowsPlain)
+          if(header.expr.length){
+            query.groupBy(rowsPlain)
+          }
         }
       }
       if(req.query.filter.where){

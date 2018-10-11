@@ -64,6 +64,33 @@
           </div>
         </div>
       </div>
+      <div class="col-md-10 col-md-offset-1 main" v-for="(dataHeader, keyHeader) of asyncMetrics.data">
+        <h3>{{dataHeader['_0']}}</h3>
+        <h5>{{dataHeader['_1']}}</h5>
+        <div class="row" style="height: 120px;overflow-x: scroll;">
+          <table class="table">
+            <thead>
+            <tr>
+              <th data-toggle="popover"
+                  v-bind:class="{'alert-success': dataRow.currentweek === 1}"
+                  :title="formatWeek(dataRow.dayStart, dataRow.dayEnd)" v-for="(dataRow, keyRow) of asyncMetrics.intervalHeader">{{dataRow.week}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td v-for="(dataCol, keyCol) of asyncMetrics.intervalHeader">
+                {{asyncMetrics.onlyNumbers[keyHeader][keyCol]}}
+              </td>
+            </tr>
+            <tr>
+              <!--<td v-for="(dataCol, keyCol) of asyncMetrics.intervalHeader">
+                {{calculateMetrics(asyncMetrics.onlyNumbers[keyHeader][keyCol], asyncMetrics.onlyNumbers[keyHeader][dataCol.prev]) }}
+              </td>-->
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <div class="col-md-10 col-md-offset-1 main">
         <div class="row" style="height: 150px;">
           <div ref="loading" v-show="asyncDataUserLoading" class="wrap-loading" style="float:left; margin-right: 2%; width: 48%; height: 100px;">
@@ -312,10 +339,58 @@ export default {
       }
       let dataOne = await this.loadReport(filter)
       this.asyncDataDetalhamentoDistribuicao = dataOne
-      console.log(dataOne)
       this.$refs.modalDescriptionDistribuicao.show()
     },
-
+    formatWeek (dataStart, dataEnd) {
+      return dataStart + ' - ' + dataEnd
+    },
+    async displayshowMetrics () {
+      let filter = {
+        include: [{
+          model: 'vw_obj_meta'
+        }],
+        rows: [
+          {
+            field: 'objetvios',
+            model: 'vw_obj_meta'
+          },
+          {
+            field: 'meta',
+            model: 'vw_obj_meta'
+          }
+        ],
+        expr: [],
+        where: []
+      }
+      let intervalHeader = {}
+      for (var i = 0; i < 53; i += 1) {
+        let dateIntervalStart = moment().day('Sunday').year('2018').week(i)
+        let dateIntervalEnd = moment().day('Sunday').year('2018').week(i + 1)
+        let dayStart = dateIntervalStart.format('DD/MM/YYYY')
+        let dayEnd = dateIntervalEnd.subtract(1, 'days').format('DD/MM/YYYY')
+        filter.rows.push({field: i, model: 'vw_obj_meta'})
+        intervalHeader['_' + (filter.rows.length - 1)] = {
+          dayStart: dayStart,
+          dayEnd: dayEnd,
+          week: i,
+          prev: '_' + (filter.rows.length - 2),
+          currentweek: (moment().week() === i) ? 1 : 0
+        }
+      }
+      console.log(moment().week())
+      let data = await this.loadReport(filter)
+      let listData = JSON.parse(JSON.stringify(data.data))
+      listData.forEach(function (item, key) {
+        delete item['_0']
+        delete item['_1']
+      })
+      data.onlyNumbers = listData
+      data.intervalHeader = intervalHeader
+      this.asyncMetrics = data
+    },
+    calculateMetrics (current, prev) {
+      return (current - prev) / (((prev !== 0 ? prev : 1) * 0.2) - (prev !== 0 ? prev : 1))
+    },
     updateValueAction (valor) {
       if (valor !== 'tudo') {
         this.getReportDate(valor)
@@ -554,7 +629,6 @@ export default {
         }
 
         let data = await this.loadReport(filter)
-        console.log(data)
         this.asyncDataDistribuicaoLoading = false
         this.asyncDataDistribuicao = data
       } catch (err) {
@@ -742,7 +816,8 @@ export default {
     }
   },
   mounted: function () {
-    // this.getReportConclusao()
+    this.getReportConclusao()
+    this.displayshowMetrics()
     this.getReportDate()
     this.getReportTag()
     this.loadFilter()
@@ -771,6 +846,7 @@ export default {
       asyncDataDetalhamentoOne: [],
       asyncDataDetalhamentoDistribuicao: [],
       asyncDataDetalhamentoTwo: [],
+      asyncMetrics: [],
       periodo: {
         value: '',
         options: []
