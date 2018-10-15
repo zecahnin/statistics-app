@@ -363,21 +363,20 @@ export default {
         where: []
       }
       let intervalHeader = {}
-      for (var i = 0; i < 53; i += 1) {
+      for (var i = 1; i < 53; i += 1) {
         let dateIntervalStart = moment().day('Sunday').year('2018').week(i)
         let dateIntervalEnd = moment().day('Sunday').year('2018').week(i + 1)
         let dayStart = dateIntervalStart.format('DD/MM/YYYY')
         let dayEnd = dateIntervalEnd.subtract(1, 'days').format('DD/MM/YYYY')
-        filter.rows.push({field: i, model: 'vw_obj_meta'})
-        intervalHeader['_' + (filter.rows.length - 1)] = {
+        filter.rows.push({field: (i), model: 'vw_obj_meta'})
+        intervalHeader['_' + i] = {
           dayStart: dayStart,
           dayEnd: dayEnd,
-          week: i,
-          prev: '_' + (filter.rows.length - 2),
+          week: (i - 1),
+          prev: '_' + (i - 2),
           currentweek: (moment().week() === i) ? 1 : 0
         }
       }
-      console.log(moment().week())
       let data = await this.loadReport(filter)
       let listData = JSON.parse(JSON.stringify(data.data))
       listData.forEach(function (item, key) {
@@ -816,14 +815,14 @@ export default {
     }
   },
   mounted: function () {
-    this.getReportConclusao()
+    // this.getReportConclusao()
     this.displayshowMetrics()
-    this.getReportDate()
-    this.getReportTag()
-    this.loadFilter()
-    this.getReportUserDate()
-    this.getReportDistribuicao()
-    this.getReportColaboradores()
+    // this.getReportDate()
+    // this.getReportTag()
+    // this.loadFilter()
+    // this.getReportUserDate()
+    // this.getReportDistribuicao()
+    // this.getReportColaboradores()
   },
   data () {
     return {
