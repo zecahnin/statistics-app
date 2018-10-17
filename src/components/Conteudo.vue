@@ -64,9 +64,14 @@
           </div>
         </div>
       </div>
-      <div class="col-md-10 col-md-offset-1 main" v-for="(dataHeader, keyHeader) of asyncMetrics.data">
+      <div class="col-md-10 col-md-offset-1 main" v-for="(dataHeader, keyHeader, index) of asyncMetrics.data">
         <h3>{{dataHeader['_0']}}</h3>
-        <h5>{{dataHeader['_1']}}</h5>
+        <h5>{{dataHeader['_1']}} <span style="font-size: 18px;" v-bind:class="{'alert-success': calculateMetricsKey(keyHeader) > 0,
+                  'alert-danger': calculateMetricsKey(keyHeader) < 0}">{{calculateMetricsKey(keyHeader)}}%</span></h5>
+        <div class="form-group">
+          <small></small>
+          <input maxlength="20" type="text" class="form-control" placeholder="Meta" v-on:change="changeMetric(keyHeader)">
+        </div>
         <div class="row" style="height: 120px;overflow-x: scroll;">
           <table class="table">
             <thead>
@@ -83,9 +88,12 @@
               </td>
             </tr>
             <tr>
-              <!--<td v-for="(dataCol, keyCol) of asyncMetrics.intervalHeader">
-                {{calculateMetrics(asyncMetrics.onlyNumbers[keyHeader][keyCol], asyncMetrics.onlyNumbers[keyHeader][dataCol.prev]) }}
-              </td>-->
+              <td v-for="(dataCol, keyCol) of asyncMetrics.intervalHeader"
+                  v-bind:class="{'alert-success': asyncMetrics.avg[keyHeader][keyCol] > 0,
+                  'alert-danger': asyncMetrics.avg[keyHeader][keyCol] < 0}"
+              >
+                {{(asyncMetrics.avg[keyHeader][keyCol])}}%
+              </td>
             </tr>
             </tbody>
           </table>
@@ -273,6 +281,9 @@ export default {
   },
   methods: {
     ...mapActions(['loadReport']),
+    async changeMetric (index) {
+      console.log(index)
+    },
     async displayModal (id) {
       let filter = {
         include: [{
@@ -345,6 +356,7 @@ export default {
       return dataStart + ' - ' + dataEnd
     },
     async displayshowMetrics () {
+      let me = this
       let filter = {
         include: [{
           model: 'vw_obj_meta'
@@ -373,22 +385,44 @@ export default {
           dayStart: dayStart,
           dayEnd: dayEnd,
           week: (i - 1),
-          prev: '_' + (i - 2),
+          prev: '_' + (i - 1),
           currentweek: (moment().week() === i) ? 1 : 0
         }
       }
       let data = await this.loadReport(filter)
       let listData = JSON.parse(JSON.stringify(data.data))
+      let metricResult = []
       listData.forEach(function (item, key) {
         delete item['_0']
         delete item['_1']
+        metricResult[key] = []
       })
       data.onlyNumbers = listData
+      data.avg = []
       data.intervalHeader = intervalHeader
+      this.asyncMetrics.metricResult = metricResult
+      data.data.forEach(function (item, key) {
+        data.avg[key] = {}
+        for (var keyH in data.intervalHeader) {
+          data.avg[key][keyH] = me.calculateMetrics(data.onlyNumbers[key][keyH],
+            data.onlyNumbers[key][data.intervalHeader[keyH].prev],
+            data.intervalHeader[keyH].week,
+            key)
+        }
+      })
+      data.metricResult = this.asyncMetrics.metricResult
       this.asyncMetrics = data
     },
-    calculateMetrics (current, prev) {
-      return (current - prev) / (((prev !== 0 ? prev : 1) * 0.2) - (prev !== 0 ? prev : 1))
+    calculateMetricsKey (index) {
+      return _.mean(this.asyncMetrics.metricResult[index])
+    },
+    calculateMetrics (current, prev, week, index) {
+      if (week > 37 && moment().week() > week) {
+        let result = ((current - prev) / (((prev !== 0 ? prev : 1))) * 100).toFixed(0)
+        this.asyncMetrics.metricResult[index].push(parseInt(result))
+        return parseInt(result)
+      }
+      return 0
     },
     updateValueAction (valor) {
       if (valor !== 'tudo') {
@@ -815,14 +849,14 @@ export default {
     }
   },
   mounted: function () {
-    // this.getReportConclusao()
+    this.getReportConclusao()
     this.displayshowMetrics()
-    // this.getReportDate()
-    // this.getReportTag()
-    // this.loadFilter()
-    // this.getReportUserDate()
-    // this.getReportDistribuicao()
-    // this.getReportColaboradores()
+    this.getReportDate()
+    this.getReportTag()
+    this.loadFilter()
+    this.getReportUserDate()
+    this.getReportDistribuicao()
+    this.getReportColaboradores()
   },
   data () {
     return {
