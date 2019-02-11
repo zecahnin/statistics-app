@@ -64,7 +64,47 @@
           </div>
         </div>
       </div>
-      <div class="col-md-10 col-md-offset-1 main" v-for="(dataHeader, keyHeader, index) of asyncMetrics.data">
+      <div class="col-md-10 col-md-offset-1 main" v-for="(dataGroup, keyGroup, indexGroup) of asyncMetrics.grouby">
+        <h3>{{keyGroup}}</h3>
+        <div class="row" style="overflow-x: scroll;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" data-toggle="popover">
+                  Meta/KPI
+                </th>
+                <th scope="col" data-toggle="popover">
+                  Valor
+                </th>
+                <th scope="col" data-toggle="popover"
+                    v-bind:class="{'alert-success': dataRow.currentweek === 1}"
+                    :title="formatWeek(dataRow.dayStart, dataRow.dayEnd)" v-for="(dataRow, keyRow) of asyncMetrics.intervalHeader">{{dataRow.week}}</th>
+              </tr>
+            </thead>
+            <tbody v-for="(dataHeader, keyHeader, index) of dataGroup">
+              <tr>
+                  <td>{{dataHeader['_1']}}</td>
+                  <td>
+                    <span style="font-size: 18px;">{{calculateMetricsKey(keyGroup, dataHeader['_1'])}}%</span>
+                  </td>
+                  <td v-for="(dataCol, keyCol) of asyncMetrics.intervalHeader">
+                    {{asyncMetrics.onlyNumbers[keyHeader][keyCol]}}
+                  </td>
+              </tr>
+              <tr>
+                <td>Resumo</td>
+                <td></td>
+                <td v-for="(dataCol, keyCol) of asyncMetrics.intervalHeader"
+                    v-bind:class="{'alert-success': asyncMetrics.avg[keyHeader][keyCol] > 0,
+                  'alert-danger': asyncMetrics.avg[keyHeader][keyCol] < 0}">
+                  {{(asyncMetrics.avg[keyHeader][keyCol])}}%
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!--<div class="col-md-10 col-md-offset-1 main" v-for="(dataHeader, keyHeader, index) of asyncMetrics.data">
         <h3>{{dataHeader['_0']}}</h3>
         <h5>{{dataHeader['_1']}} <span style="font-size: 18px;" v-bind:class="{'alert-success': calculateMetricsKey(keyHeader) > 0,
                   'alert-danger': calculateMetricsKey(keyHeader) < 0}">{{calculateMetricsKey(keyHeader)}}%</span></h5>
@@ -98,7 +138,7 @@
             </tbody>
           </table>
         </div>
-      </div>
+      </div>-->
       <div class="col-md-10 col-md-offset-1 main">
         <div class="row" style="height: 150px;">
           <div ref="loading" v-show="asyncDataUserLoading" class="wrap-loading" style="float:left; margin-right: 2%; width: 48%; height: 100px;">
@@ -376,8 +416,8 @@ export default {
       }
       let intervalHeader = {}
       for (var i = 1; i < 53; i += 1) {
-        let dateIntervalStart = moment().day('Sunday').year('2018').week(i)
-        let dateIntervalEnd = moment().day('Sunday').year('2018').week(i + 1)
+        let dateIntervalStart = moment().day('Sunday').year('2019').week(i)
+        let dateIntervalEnd = moment().day('Sunday').year('2019').week(i + 1)
         let dayStart = dateIntervalStart.format('DD/MM/YYYY')
         let dayEnd = dateIntervalEnd.subtract(1, 'days').format('DD/MM/YYYY')
         filter.rows.push({field: (i), model: 'vw_obj_meta'})
@@ -391,11 +431,19 @@ export default {
       }
       let data = await this.loadReport(filter)
       let listData = JSON.parse(JSON.stringify(data.data))
+      let grouby = _.groupBy(data.data, '_0')
+
       let metricResult = []
+      for (var keyG in grouby) {
+        metricResult[keyG] = {}
+        grouby[keyG].forEach(function (item, key) {
+          metricResult[keyG][item['_1']] = []
+        })
+      }
+      console.log(metricResult)
       listData.forEach(function (item, key) {
         delete item['_0']
         delete item['_1']
-        metricResult[key] = []
       })
       data.onlyNumbers = listData
       data.avg = []
@@ -407,19 +455,20 @@ export default {
           data.avg[key][keyH] = me.calculateMetrics(data.onlyNumbers[key][keyH],
             data.onlyNumbers[key][data.intervalHeader[keyH].prev],
             data.intervalHeader[keyH].week,
-            key)
+            item['_0'], item['_1'])
         }
       })
       data.metricResult = this.asyncMetrics.metricResult
+      data.grouby = _.groupBy(data.data, '_0')
       this.asyncMetrics = data
     },
-    calculateMetricsKey (index) {
-      return _.mean(this.asyncMetrics.metricResult[index])
+    calculateMetricsKey (index, name) {
+      return _.mean(this.asyncMetrics.metricResult[index][name])
     },
-    calculateMetrics (current, prev, week, index) {
+    calculateMetrics (current, prev, week, index, keyH) {
       if (week > 37 && moment().week() > week) {
         let result = ((current - prev) / (((prev !== 0 ? prev : 1))) * 100).toFixed(0)
-        this.asyncMetrics.metricResult[index].push(parseInt(result))
+        this.asyncMetrics.metricResult[index][keyH].push(parseInt(result))
         return parseInt(result)
       }
       return 0
@@ -849,14 +898,14 @@ export default {
     }
   },
   mounted: function () {
-    this.getReportConclusao()
+    // this.getReportConclusao()
     this.displayshowMetrics()
-    this.getReportDate()
-    this.getReportTag()
-    this.loadFilter()
-    this.getReportUserDate()
-    this.getReportDistribuicao()
-    this.getReportColaboradores()
+    // this.getReportDate()
+    // this.getReportTag()
+    // this.loadFilter()
+    // this.getReportUserDate()
+    // this.getReportDistribuicao()
+    // this.getReportColaboradores()
   },
   data () {
     return {
